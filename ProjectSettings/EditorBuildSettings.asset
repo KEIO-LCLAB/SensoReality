@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 0
+    path: Assets/Samples/Meta MR Utility Kit/65.0.0/Bouncing Ball/BouncingBall.unity
+    guid: 8f96b0c0fd5605a4f8477abdb8e65436
+  - enabled: 1
+    path: Assets/Samples/Meta MR Utility Kit/65.0.0/Basic/MRUKBase.unity
+    guid: 21549dbcb1294de4fafd68fca195dda5
+  m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 7d064c522fbe6af49b497b9d7fe908e7, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 5c5dfc92dd4806544b84c4e10fc63630, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 2e0d2b0d258a9f146961ff27ada5f07a, type: 2}
