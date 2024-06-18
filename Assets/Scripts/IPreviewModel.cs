@@ -2,7 +2,13 @@ using UnityEngine;
 
 public abstract class IPreviewModel : MonoBehaviour
 {
-    public abstract void SetAsPreviewView();
+    public virtual void SetAsPreviewView()
+    {
+        foreach (var collider in GetComponentsInChildren<Collider>())
+        {
+            collider.enabled = false;
+        }
+    }
 
     public virtual bool CanBePlacedAt(Ray ray, RaycastHit hit)
     {

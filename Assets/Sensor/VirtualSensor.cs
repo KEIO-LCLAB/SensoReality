@@ -5,6 +5,7 @@ using Oculus.Interaction;
 using Scenes.interactables.Sensor;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Sensor
 {
@@ -19,9 +20,9 @@ namespace Sensor
         [Tooltip("to visualize the object when it is selected.")]
         [SerializeField] [AllowNull] private Rigidbody rigidbody;
         [Tooltip("duration for transform mode. grabbing time less than the duration, the sensor will be in selecting mode.")]
-        [SerializeField] private float durationForTransformMode = 1.0f;
+        public float modeSwitchTime = 1.0f;
         [Tooltip("jitter duration. the sensor will jitter for 1 second to notify the user that the sensor is in transform mode.")]
-        [SerializeField] private float jitterDuration = 0.2f;
+        public float jitterTime = 0.2f;
 
         protected SensorDataCenter sensorDataCenter => SensorDataCenter.Instance;
         public Rigidbody Rigidbody => rigidbody;
@@ -139,11 +140,6 @@ namespace Sensor
 
         public override void ProcessPointerEvent(PointerEvent evt)
         {
-            if (evt.Type != PointerEventType.Move || selectedTime >= durationForTransformMode + jitterDuration)
-            {
-                // if the sensor is in transform mode (after jitter), it will process the Move event.
-                base.ProcessPointerEvent(evt);
-            }
             base.ProcessPointerEvent(evt);
             if (evt.Type == PointerEventType.Select)
             {
@@ -152,7 +148,7 @@ namespace Sensor
             }
             else if (selectedTime >= 0 && evt.Type == PointerEventType.Unselect)
             {
-                if (selectedTime < durationForTransformMode)
+                if (selectedTime < modeSwitchTime)
                 {
                     // selecting mode
                     isSelected = !isSelected;
@@ -162,15 +158,20 @@ namespace Sensor
             }
         }
 
-        // protected override void PointableElementUpdated(PointerEvent evt)
-        // {
-        //     if (evt.Type != PointerEventType.Move || selectedTime >= durationForTransformMode + jitterDuration)
-        //     {
-        //         // if the sensor is in transform mode (after jitter), it will process the Move event.
-        //         base.PointableElementUpdated(evt);
-        //     }
-        //     // base.PointableElementUpdated(evt);
-        // }
+        protected override void PointableElementUpdated(PointerEvent evt)
+        {
+            if (evt.Type == PointerEventType.Unselect)
+            {
+                // do not force move
+                evt = new PointerEvent(evt.Identifier, PointerEventType.Cancel, evt.Pose, evt.Data);
+            }
+            if (evt.Type == PointerEventType.Move && selectedTime < modeSwitchTime + jitterTime)
+            {
+                // if the sensor is in transform mode (after jitter), it will process the Move event.
+                return;
+            }
+            base.PointableElementUpdated(evt);
+        }
 
         void Update()
         {
@@ -182,19 +183,19 @@ namespace Sensor
             if (selectedTime >= 0)
             {
                 selectedTime += Time.deltaTime;
-                if (selectedTime >= durationForTransformMode)
+                if (selectedTime >= modeSwitchTime)
                 {
                     // transform mode
                     if (sensorPlacement == null)
                     { // create sensor placement for the first time.
                         sensorPlacement = Rigidbody.AddComponent<SensorPlacement>();
-                        sensorPlacement.SetSensor(this, true);
+                        sensorPlacement.SetSensor(this);
                     }
                     isSelected = false;
-                    if (selectedTime <= durationForTransformMode + jitterDuration)
+                    if (selectedTime <= modeSwitchTime + jitterTime)
                     {
                         // jitter 1 second to notify the user that the sensor is in transform mode.
-                        var value = (durationForTransformMode + jitterDuration - selectedTime) / jitterDuration;
+                        var value = (modeSwitchTime + jitterTime - selectedTime) / jitterTime;
                         transform.position = lastPosition + Vector3.up * (0.007f * Mathf.Sin(value * Mathf.PI * 8));
                     }
                 }
@@ -224,70 +225,5 @@ namespace Sensor
         
         }
 
-        // public void bindToBone()
-        // {
-        //     var from = transform.position;
-        //     var direction = transform.forward;
-        //     var hitResult1 = Physics.Raycast(new Ray(from, direction), out var hit1, 10);
-        //     var hitResult2 = Physics.Raycast(new Ray(from, direction * -1) , out var hit2, 10);
-        //     var hit = new RaycastHit();
-        //     if (hitResult1 && hitResult2)
-        //     {
-        //         if (hit1.distance < hit2.distance)
-        //         {
-        //             hit = hit1;
-        //         }
-        //         else
-        //         {
-        //             hit = hit2;
-        //         }
-        //     } else if (hitResult1)
-        //     {
-        //         hit = hit1;
-        //     } else if (hitResult2)
-        //     {
-        //         hit = hit2;
-        //     }
-        //     if (hit.distance > 0) {
-        //         Debug.DrawLine(hit.point, hit.point + hit.normal * 100, Color.green, 10);
-        //         var skinnedMeshRenderer = hit.collider.GetComponentInChildren<SkinnedMeshRenderer>();
-        //         if (skinnedMeshRenderer != null && hit.collider is MeshCollider collider)
-        //         {
-        //             // Cache used values rather than accessing straight from the mesh on the loop below
-        //             var sharedMesh = skinnedMeshRenderer.sharedMesh;
-        //             var triangles = sharedMesh.triangles;
-        //             var verticesIndex = triangles[hit.triangleIndex * 3 + 0];
-        //         
-        //             var bw = sharedMesh.boneWeights[verticesIndex];
-        //             var boneIndex = bw.boneIndex0;
-        //             var boneWeight = bw.weight0;
-        //             if (bw.weight1 > boneWeight)
-        //             {
-        //                 boneIndex = bw.boneIndex1;
-        //                 boneWeight = bw.weight1;
-        //             }
-        //             if (bw.weight2 > boneWeight)
-        //             {
-        //                 boneIndex = bw.boneIndex2;
-        //                 boneWeight = bw.weight2;
-        //             }
-        //             if (bw.weight3 > boneWeight)
-        //             {
-        //                 boneIndex = bw.boneIndex3;
-        //                 boneWeight = bw.weight3;
-        //             }
-        //             if (boneWeight > 0)
-        //             {
-        //                 var boneObject = skinnedMeshRenderer.bones[boneIndex].gameObject;
-        //                 transform.parent = boneObject.transform;
-        //                 boneMeshAttachment = new BoneMeshAttachment(this.gameObject, hit.triangleIndex, boneIndex, skinnedMeshRenderer, collider)
-        //                 {
-        //                     positionOffset = transform.position - hit.collider.transform.TransformPoint(collider.sharedMesh.vertices[verticesIndex]),
-        //                     rotationZ = gameObject.transform.localRotation.eulerAngles.z,
-        //                 };
-        //             }
-        //         }
-        //     }
-        // }
     }
 }
