@@ -42,6 +42,7 @@ namespace Scenes.interactables.Sensor
             if (newSensor.TryGetComponent(out VirtualSensor virtualSensor))
             {
                 virtualSensor.Rigidbody.AddComponent<SensorPlacement>().SetSensor(virtualSensor, true);
+                SensorDataCenter.Instance.RegisterSensor(virtualSensor);
             }
             else
             {

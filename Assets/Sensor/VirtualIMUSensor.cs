@@ -23,31 +23,25 @@ namespace Sensor
             }
         }
     
-        private static int AUTOMATIC_ID;
         
         [SerializeField] private AxisAnchor AnchorVisual;
         
+        
         // run-time
         private float _duration;
-        private bool _isSmartWatch;
-        private bool _isSmartPhone;
         private Vector3 _lastPosition = Vector3.zero;
         private Vector3 _lastRotation = Vector3.zero;
         private Vector3 _lastSpeed = Vector3.zero;
         private Vector3 _lastAcceleration = Vector3.zero;
         private readonly List<Tuple<float, Vector3>> _positionCache = new();
-
+        private LineChartController graphController;
+        
         protected override void Start()
         {
             base.Start();
             _lastPosition = transform.position;
             _lastRotation = transform.rotation.eulerAngles;
-            if (!name.StartsWith("Box1dot") && !name.StartsWith("imu"))
-            {
-                name = "Box1dot" + AUTOMATIC_ID++;
-            }
-            _isSmartWatch = name.StartsWith("imu_sw");
-            _isSmartPhone = name.StartsWith("imu_sp");
+            graphController = graphChart.GetComponent<LineChartController>();
         }
 
         /// <summary>
@@ -91,13 +85,6 @@ namespace Sensor
                 
                     // TODO: coordinate transform
                     var localAcceleration = ToLocal(acceleration);
-                    if (_isSmartWatch)
-                    {
-                        localAcceleration = new Vector3(localAcceleration.x, localAcceleration.z, -localAcceleration.y);
-                    } else if (_isSmartPhone)
-                    {
-                        localAcceleration = new Vector3(localAcceleration.x, -localAcceleration.y, localAcceleration.z);
-                    }
                     var sensorData = new IMUSensorData
                     {
                         Orientation = angular,
@@ -109,9 +96,14 @@ namespace Sensor
                     {
                         AnchorVisual.anchor = sensorData.LocalAcceleration;
                         AppendData(t, sensorData);
-                        if (isSelected && !sensorDataCenter.IsSimulating)
+                        if (ShowGraph)
                         {
-                            sensorDataCenter.UploadIMUData(this, t, sensorData.Orientation, sensorData.LocalAcceleration);
+                            graphController?.UploadData(t, new[]
+                            {
+                                sensorData.LocalAcceleration.x,
+                                sensorData.LocalAcceleration.y,
+                                sensorData.LocalAcceleration.z,
+                            });
                         }
                     }
                 }

@@ -12,13 +12,16 @@ namespace Sensor
     public abstract class VirtualSensor : PointableElement
     {
         [Tooltip("to visualize the object when it is in active.")]
-        [SerializeField] [AllowNull] private GameObject inActiveVisualization;
+        [SerializeField] [AllowNull] protected GameObject inActiveVisualization;
         [Tooltip("to visualize the object when it is in active.")]
-        [SerializeField] [AllowNull] private GameObject preview;
+        [SerializeField] [AllowNull] protected GameObject preview;
         [Tooltip("to visualize the object when it is selected.")]
-        [SerializeField] [AllowNull] private GameObject selectedVisualization;
+        [SerializeField] [AllowNull] protected GameObject selectedVisualization;
+        [FormerlySerializedAs("graphController")]
+        [Tooltip("to visualize the Graph Chart.")]
+        [SerializeField] [AllowNull] protected GameObject graphChart;
         [Tooltip("to visualize the object when it is selected.")]
-        [SerializeField] [AllowNull] private Rigidbody rigidbody;
+        [SerializeField] [AllowNull] protected Rigidbody rigidbody;
         [Tooltip("duration for transform mode. grabbing time less than the duration, the sensor will be in selecting mode.")]
         public float modeSwitchTime = 1.0f;
         [Tooltip("jitter duration. the sensor will jitter for 1 second to notify the user that the sensor is in transform mode.")]
@@ -46,7 +49,8 @@ namespace Sensor
             }
         }
         public Action<bool> onActiveChanged;
-
+        
+        
         /// <summary>
         /// to show the preview of the sensor.
         /// </summary>
@@ -64,6 +68,24 @@ namespace Sensor
         }
 
         public Action<bool> onShowPreviewChanged;
+        
+        /// <summary>
+        /// to show the graph of the sensor.
+        /// </summary>
+        private bool showGraph;
+        public bool ShowGraph
+        {
+            get => showGraph;
+            set
+            {
+                if (ShowGraph == value) return;
+                showGraph = value;
+                graphChart?.SetActive(value);
+                onShowGraphChanged?.Invoke(value);
+            }
+        }
+
+        public Action<bool> onShowGraphChanged;
 
         /// <summary>
         /// Only one sensor can be selected at a time.
@@ -225,5 +247,9 @@ namespace Sensor
         
         }
 
+        private void OnDestroy()
+        {
+            Destroy(graphChart);
+        }
     }
 }

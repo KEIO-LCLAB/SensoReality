@@ -1452,6 +1452,7 @@ GameObject:
   m_Component:
   - component: {fileID: 311746616}
   - component: {fileID: 311746617}
+  - component: {fileID: 311746618}
   m_Layer: 0
   m_Name: OVRLeftHandVisual
   m_TagString: Untagged
@@ -1518,6 +1519,24 @@ MonoBehaviour:
   - {fileID: 1807005322}
   - {fileID: 2073149518}
   - {fileID: 1835993125}
+--- !u!114 &311746618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 311746615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1e477b940c8a084ab4f2dda703b49ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _handVisual: {fileID: 0}
+  _hand: {fileID: 467565609}
+  _jointsRadiusFeature: {fileID: 337296789}
+  _asTriggers: 0
+  _useLayer: 0
+  _mask: 16777215
 --- !u!1 &319928125
 GameObject:
   m_ObjectHideFlags: 0
@@ -10961,6 +10980,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1816944863}
   - component: {fileID: 1816944864}
+  - component: {fileID: 1816944865}
   m_Layer: 0
   m_Name: OVRRightHandVisual
   m_TagString: Untagged
@@ -11027,6 +11047,24 @@ MonoBehaviour:
   - {fileID: 1593922710}
   - {fileID: 621465475}
   - {fileID: 1179367549}
+--- !u!114 &1816944865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1816944862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1e477b940c8a084ab4f2dda703b49ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _handVisual: {fileID: 0}
+  _hand: {fileID: 1333609809}
+  _jointsRadiusFeature: {fileID: 1756197588}
+  _asTriggers: 0
+  _useLayer: 0
+  _mask: 16777215
 --- !u!1 &1820074575
 GameObject:
   m_ObjectHideFlags: 0
@@ -13246,9 +13284,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   samplingRate: 20
-  updateType: 1
-  accelerationPreview: {fileID: 0}
-  orientationPreview: {fileID: 0}
   smoothWindowSize: 0.2
   cacheTime: 4
   alwaysUpdateBoneMeshAttachment: 1

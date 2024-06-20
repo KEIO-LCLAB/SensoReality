@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Sensor
@@ -11,6 +10,7 @@ namespace Sensor
 
         [SerializeField] private Toggle activeToggle;
         [SerializeField] private Toggle previewToggle;
+        [SerializeField] private Toggle graphToggle;
         
         //runtime
         private float radius;
@@ -24,30 +24,22 @@ namespace Sensor
             radius = (center.position - transform.position).magnitude;
             // toggles
             UpdateToggles();
-            activeToggle.onValueChanged.AddListener(isOn => SetSensorActive(!isOn));
-            previewToggle.onValueChanged.AddListener(SetSensorPreview);
+            activeToggle.onValueChanged.AddListener(isOn => sensor.IsActive = !isOn);
+            previewToggle.onValueChanged.AddListener(isOn => sensor.ShowPreview = isOn);
+            graphToggle.onValueChanged.AddListener(isOn => sensor.ShowGraph = isOn);
         }
         
-
         public void RemoveSensor()
         {
+            SensorDataCenter.Instance.UnregisterSensor(sensor);
             Destroy(sensor.gameObject);
         }
         
-        public void SetSensorActive(bool active)
-        {
-            sensor.IsActive = active;
-        }
-        
-        public void SetSensorPreview(bool preview)
-        {
-            sensor.ShowPreview = preview;
-        }
-
         private void UpdateToggles()
         {
             activeToggle.isOn = !sensor.IsActive;
             previewToggle.isOn = sensor.ShowPreview;
+            graphToggle.isOn = sensor.ShowGraph;
         }
 
         private void Update()

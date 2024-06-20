@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Animations;
 using Scenes.Replay.sensor;
@@ -10,30 +11,25 @@ namespace Sensor
 {
     public class SensorDataCenter : MonoBehaviour
     {
-        public enum UpdateType
-        {
-            Update,
-            FixedUpdate,
-            LateUpdate
-        }
-    
+        private static int AUTOMATIC_ID;
+
         private static SensorDataCenter INSTANCE;
         public static SensorDataCenter Instance => INSTANCE;
     
         [SerializeField] public int samplingRate = 20; // 20Hz 
-        [SerializeField] public UpdateType updateType = UpdateType.FixedUpdate;
-        [SerializeField] private LineChart accelerationPreview;
-        [SerializeField] private LineChart orientationPreview;
         [SerializeField] public float smoothWindowSize = 0.2f;
         [SerializeField] private int cacheTime = 4;
         [SerializeField] public bool alwaysUpdateBoneMeshAttachment = true;
     
         public float SamplingInterval => 1.0f / samplingRate;
         // run-time
+        private readonly Dictionary<ISensorDefinition, List<VirtualSensor>> sensors = new();
         private readonly List<Tuple<float, Vector3>> accelerationData = new();
         private readonly List<Tuple<float, Vector3>> orientationData = new();
         private bool isSimulating;
         public bool IsSimulating => isSimulating;
+        private bool isRecording;
+        public bool IsRecording => isRecording;
 
         public void Start()
         {
@@ -43,44 +39,59 @@ namespace Sensor
             }
             INSTANCE = this;
         }
-
-        public void UploadIMUData(VirtualSensor virtualSensor, float time, Vector3 angular, Vector3 acceleration)
-        {
-            if (isSimulating) return;
-            accelerationData.Add(new Tuple<float, Vector3>(time, acceleration));
-            orientationData.Add(new Tuple<float, Vector3>(time, angular));
-            var startTime = accelerationData[0].Item1;
-            while (time - startTime > cacheTime)
-            {
-                accelerationData.RemoveAt(0);
-                startTime = accelerationData[0].Item1;
-            }
-            startTime = orientationData[0].Item1;
-            while (time - startTime > cacheTime)
-            {
-                orientationData.RemoveAt(0);
-                startTime = orientationData[0].Item1;
-            }
-            if (accelerationPreview != null)
-            {
-                UpdateLineChart(accelerationPreview, accelerationData);
-            }
         
-            if (orientationPreview != null)
+        public void RegisterSensor(VirtualSensor sensor)
+        {
+            if (sensors.TryGetValue(sensor.SensorDefinition(), out var sensorList))
             {
-                UpdateLineChart(orientationPreview, orientationData);
+                sensor.name = $"{sensor.SensorDefinition().getSensorName()}-{AUTOMATIC_ID++}";
+                sensorList.Add(sensor);
+            }
+            else
+            {
+                sensors[sensor.SensorDefinition()] = new List<VirtualSensor> {sensor};
             }
         }
-  
-        private void UpdateLineChart(LineChart lineChart, List<Tuple<float, Vector3>> data) {
-            if (lineChart == null) return;
-            lineChart.ClearData();
-            data.ForEach(item => {
-                lineChart.AddXAxisData(item.Item1.ToString());
-                lineChart.AddData(0, item.Item2.x);
-                lineChart.AddData(1, item.Item2.y);
-                lineChart.AddData(2, item.Item2.z);
-            });
+        
+        public void UnregisterSensor(VirtualSensor sensor)
+        {
+            if (sensors.TryGetValue(sensor.SensorDefinition(), out var sensorList))
+            {
+                sensorList.Remove(sensor);
+            }
+        }
+        
+        public void StartRecording()
+        {
+            isRecording = true;
+            sensors.Values.ToList().ForEach(sensorList => sensorList.ForEach(sensor =>
+            {
+                sensor.ClearData();
+                sensor.ClearSmoothCache();
+                sensor.StartRecording();
+            }));
+        }
+        
+        public void StopRecording()
+        {
+            isRecording = false;
+            foreach (var sensorDataPair in sensors)
+            {
+                var sensorData =  sensorDataPair.Value.SelectMany(sensor => sensor.Data).OrderBy(data => data.time).ToList();
+                if (sensorData.Count == 0) continue;
+                // save results
+                var rootPath = Application.dataPath + "/../Data";
+                if (!Directory.Exists(rootPath))
+                {
+                    Directory.CreateDirectory(rootPath);
+                }
+                var path = $"{rootPath}/{sensorDataPair.Key.getSensorName().ToLower()}-{name}.csv";
+                using var writer = new StreamWriter(path);
+                writer.WriteLine($"tag,time,{sensorDataPair.Key.getCsvHeader()}");
+                foreach (var data in sensorData) {
+                    writer.WriteLine(data.ToCsvLine());
+                }
+            }
         }
 
         public Dictionary<ISensorDefinition, List<SensorData>> SimulateSensorData(IAnimationRuntime animationRuntime, SimulationConfig config)

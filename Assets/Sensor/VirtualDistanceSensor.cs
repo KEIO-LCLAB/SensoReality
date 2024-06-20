@@ -7,6 +7,15 @@ namespace Sensor
     {
         public static readonly ISensorDefinition DEFINITION = ISensorDefinition.create("DISTANCE", "d");
  
+        private struct DistanceSensorData : ISensorData
+        {
+            public float distance;
+            public string ToCsvLine()
+            {
+                return $"{distance}";
+            }
+        }
+        
         [SerializeField] private float validDistance = 2;
         [SerializeField] private BarChart barChart;
         [SerializeField] private GameObject indicatorLine;
@@ -14,7 +23,13 @@ namespace Sensor
         [SerializeField] private Transform endPoint;
         [SerializeField] private Transform YAxis;
         [SerializeField] private Transform XAxis;
+        
+        private LineChartController graphController;
 
+        public float Progress => barChart.progress;
+        
+        public float Distance => Progress * validDistance;
+        
         public float YRotation
         {
             get => YAxis.rotation.eulerAngles.y;
@@ -44,6 +59,7 @@ namespace Sensor
             barChart.ProgressTextFormatter = f => (f >= 1 ? ">= " + validDistance.ToString("F2") : (f * validDistance).ToString("F2")) + "m";
             onShowPreviewChanged += showPreview => { indicatorLine?.SetActive(showPreview); };
             indicatorLine.SetActive(ShowPreview);
+            graphController = graphChart.GetComponent<LineChartController>();
         }
 
         public override void UpdateWorking(float time, float deltaTime)
@@ -64,7 +80,13 @@ namespace Sensor
             {
                 barChart.progress = 1;
             }
-            indicatorLine.transform.localScale = new Vector3(1F, 1F, 333.333f * barChart.progress * validDistance);
+            var sensorData = new DistanceSensorData() {distance = Distance};
+            if (ShowGraph)
+            {
+                graphController?.UploadData(time, new[] {sensorData.distance});
+            }
+            AppendData(time, sensorData);
+            indicatorLine.transform.localScale = new Vector3(1F, 1F, 333.333f * sensorData.distance);
         }
 
         public override ISensorDefinition SensorDefinition()
