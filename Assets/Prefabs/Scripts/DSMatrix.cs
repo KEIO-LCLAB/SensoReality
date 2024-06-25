@@ -1,11 +1,10 @@
-using System;
-using Oculus.Interaction;
 using UnityEngine;
 
-namespace Prefabs
+namespace Prefabs.Scripts
 {
     public class DSMatrix : IPreviewModel
     {
+        [SerializeField] private GameObject MatrixVisualization;
         
         public override Pose GetPlacementPose(Ray ray, RaycastHit hit)
         {
@@ -14,5 +13,10 @@ namespace Prefabs
             return new Pose(hit.point, Quaternion.Euler(rotation));
         }
 
+        public override void OnPlaced()
+        {
+            base.OnPlaced();
+            MatrixVisualization.SetActive(true);
+        }
     }
 }

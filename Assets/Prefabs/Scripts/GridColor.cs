@@ -2,7 +2,7 @@ using Sensor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Prefabs
+namespace Prefabs.Scripts
 {
     public class GridColor : MonoBehaviour
     {

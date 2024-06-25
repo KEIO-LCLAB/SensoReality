@@ -70,6 +70,10 @@ namespace Scenes.interactables.Model
                         // spawn
                         var model = Instantiate(modelPrefab, hit.point, Quaternion.identity);
                         model.transform.rotation = previewPrefab.transform.rotation;
+                        if (model.TryGetComponent(out IPreviewModel modelPreview))
+                        {
+                            modelPreview.OnPlaced();
+                        }
                     }
 
                     if (cooldown == 0 && !rightHand.GetIndexFingerIsPinching())

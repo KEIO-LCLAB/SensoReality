@@ -61,12 +61,12 @@ namespace Scenes.interactables.Sensor
             }
         }
         
-        private void OnTriggerExit(Collider other)
-        {
-            if (sensorAttachableCollided == null) return;
-            sensorAttachableCollided.OnAttachHoverExit(sensor);
-            sensorAttachableCollided = null;
-        }
+        // private void OnTriggerExit(Collider other)
+        // {
+        //     if (sensorAttachableCollided == null) return;
+        //     sensorAttachableCollided.OnAttachHoverExit(sensor);
+        //     sensorAttachableCollided = null;
+        // }
 
     }
 }

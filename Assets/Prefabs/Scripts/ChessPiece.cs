@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Prefabs
+namespace Prefabs.Scripts
 {
     public class ChessPiece : IPreviewModel
     {

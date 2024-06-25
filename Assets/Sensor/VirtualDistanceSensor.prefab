@@ -457,7 +457,7 @@ GameObject:
   - component: {fileID: 4871527707680380044}
   - component: {fileID: 5322648215080773538}
   - component: {fileID: 5907861347563984430}
-  - component: {fileID: -8062537185890644606}
+  - component: {fileID: 3985323958919249435}
   m_Layer: 0
   m_Name: VirtualDistanceSensor
   m_TagString: Untagged
@@ -499,7 +499,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _transferOnSecondSelection: 0
   _addNewPointsToFront: 0
-  _forwardElement: {fileID: -8062537185890644606}
+  _forwardElement: {fileID: 3985323958919249435}
   inActiveVisualization: {fileID: 3703638239292977620}
   preview: {fileID: 327333853468886311}
   selectedVisualization: {fileID: 8579969796150945143}
@@ -507,7 +507,7 @@ MonoBehaviour:
   rigidbody: {fileID: 4072009076499124011}
   modeSwitchTime: 1
   jitterTime: 0.2
-  validDistance: 2
+  validDistance: 3
   barChart: {fileID: 7855963295389892336}
   indicatorLine: {fileID: 7588307997344655361}
   startPoint: {fileID: 4756629128621931529}
@@ -537,7 +537,7 @@ MonoBehaviour:
   _scoringModifier:
     _positionRotationWeight: 0.8
   _slippiness: 0
-  _supportedGrabTypes: 3
+  _supportedGrabTypes: 1
   _pinchGrabRules:
     _thumbRequirement: 1
     _indexRequirement: 1
@@ -555,7 +555,7 @@ MonoBehaviour:
   _movementProvider: {fileID: 0}
   _handAligment: 1
   _handGrabPoses: []
---- !u!114 &-8062537185890644606
+--- !u!114 &3985323958919249435
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -567,7 +567,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f86b14a27b52f4f9298c33015b5c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _transferOnSecondSelection: 0
+  _transferOnSecondSelection: 1
   _addNewPointsToFront: 0
   _forwardElement: {fileID: 0}
   _oneGrabTransformer: {fileID: 0}
@@ -1066,7 +1066,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a7b799423d15f9944929369ebade5b8d, type: 2}
+  - {fileID: 2100000, guid: fb890655a1680184994ab7cc4550b736, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1092,7 +1092,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.007
+    widthMultiplier: 0.003
     widthCurve:
       serializedVersion: 2
       m_Curve:

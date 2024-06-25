@@ -19,4 +19,9 @@ public abstract class IPreviewModel : MonoBehaviour
     {
         return new Pose(hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal));
     }
+    
+    public virtual void OnPlaced()
+    {
+       
+    }
 }

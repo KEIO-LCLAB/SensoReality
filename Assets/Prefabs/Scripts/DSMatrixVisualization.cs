@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using Oculus.Interaction;
 using Sensor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Prefabs
+namespace Prefabs.Scripts
 {
     public class DSMatrixVisualization : MonoBehaviour
     {
