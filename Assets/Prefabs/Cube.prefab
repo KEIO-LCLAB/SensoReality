@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 7877940907580533119}
   - component: {fileID: 5023780956894697869}
   - component: {fileID: 8457983653258099547}
+  - component: {fileID: 5362165436590964424}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -246,6 +247,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Parent: {fileID: 396287949332718288}
   HoverEffect: {fileID: 8581717287209547485}
+--- !u!114 &5362165436590964424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5871715003499673036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2044d84c4f29db843a4712bd96d1dc43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  normalOffset: 0.05
 --- !u!1 &8581717287209547485
 GameObject:
   m_ObjectHideFlags: 0

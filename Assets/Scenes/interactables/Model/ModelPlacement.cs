@@ -68,8 +68,7 @@ namespace Scenes.interactables.Model
                     {
                         cooldown = 0.5f;
                         // spawn
-                        var model = Instantiate(modelPrefab, hit.point, Quaternion.identity);
-                        model.transform.rotation = previewPrefab.transform.rotation;
+                        var model = Instantiate(modelPrefab, previewPrefab.transform.position, previewPrefab.transform.rotation);
                         if (model.TryGetComponent(out IPreviewModel modelPreview))
                         {
                             modelPreview.OnPlaced();
