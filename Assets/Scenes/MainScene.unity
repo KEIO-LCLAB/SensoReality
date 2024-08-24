@@ -1795,6 +1795,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handAttachModel: {fileID: 54387763}
   handPhysics: {fileID: 311746618}
+  handCondition: 0
 --- !u!1 &319928125
 GameObject:
   m_ObjectHideFlags: 0
@@ -11773,6 +11774,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handAttachModel: {fileID: 157940746}
   handPhysics: {fileID: 1816944865}
+  handCondition: 1
 --- !u!1 &1820074575
 GameObject:
   m_ObjectHideFlags: 0
