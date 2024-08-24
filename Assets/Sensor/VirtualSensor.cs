@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Oculus.Interaction;
+using Oculus.Interaction.Input;
 using Scenes.interactables.Sensor;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -211,7 +212,12 @@ namespace Sensor
                     if (sensorPlacement == null)
                     { // create sensor placement for the first time.
                         sensorPlacement = Rigidbody.AddComponent<SensorPlacement>();
-                        sensorPlacement.SetSensor(this);
+                        IHand hand = DevicesRef.Instance.RightHand;
+                        if (!hand.GetIndexFingerIsPinching() && DevicesRef.Instance.LeftHand.GetIndexFingerIsPinching())
+                        {
+                            hand = DevicesRef.Instance.LeftHand;
+                        }   
+                        sensorPlacement.SetSensor(this, hand);
                     }
                     isSelected = false;
                     if (selectedTime <= modeSwitchTime + jitterTime)

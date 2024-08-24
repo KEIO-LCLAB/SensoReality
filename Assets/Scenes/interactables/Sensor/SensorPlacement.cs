@@ -13,11 +13,13 @@ namespace Scenes.interactables.Sensor
         [AllowNull]
         private SensorAttachable sensorAttachableCollided;
         private bool shouldTransform;
+        private IHand hand;
         
-        public void SetSensor(VirtualSensor virtualSensor, bool shouldUseTransform = false)
+        public void SetSensor(VirtualSensor virtualSensor, IHand hand, bool shouldUseTransform = false)
         {
             sensor = virtualSensor;
             shouldTransform = shouldUseTransform;
+            this.hand = hand;
         }
         
         void Update()
@@ -52,6 +54,10 @@ namespace Scenes.interactables.Sensor
         {
             if (other.gameObject.TryGetComponent(out SensorAttachable sensorAttachable))
             {
+                if (!sensorAttachable.CanAttachTo(sensor, hand))
+                {
+                    return;
+                }
                 if (sensorAttachableCollided != null)
                 {
                     sensorAttachableCollided.OnAttachHoverExit(sensor);
