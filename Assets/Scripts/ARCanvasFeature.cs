@@ -10,6 +10,8 @@ public class ARCanvasFeature : MonoBehaviour
     private bool MoveCanvasInFrontOfCamera = true;
     [SerializeField, Tooltip("The canvas group to fade in and out.")]
     private CanvasGroup CanvasGroup;
+    [SerializeField, Tooltip("Face the canvas to the camera.")]
+    private bool FaceToCamera = true;
     [Tooltip("The duration of the fade in and out.")]
     public float FadeDuration = 0.25f;
     public Action OnCanvasClose;
@@ -49,10 +51,13 @@ public class ARCanvasFeature : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var cameraRig = DevicesRef.Instance.CameraRigRef.CameraRig;
-        transform.LookAt(cameraRig.centerEyeAnchor);
-        // 180 degree rotation on y axis to face the camera
-        transform.Rotate(0, 180, 0);
+        if (FaceToCamera)
+        {
+            var cameraRig = DevicesRef.Instance.CameraRigRef.CameraRig;
+            transform.LookAt(cameraRig.centerEyeAnchor);
+            // 180 degree rotation on y axis to face the camera
+            transform.Rotate(0, 180, 0);
+        }
     }
     
     IEnumerator FadeCanvas(bool fadeIn, Action callback = null)
