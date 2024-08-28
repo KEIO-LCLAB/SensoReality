@@ -72,26 +72,35 @@ namespace Sensor
             }));
         }
         
-        public void StopRecording()
+        public Dictionary<VirtualSensor, List<SensorData>> StopRecording()
         {
             isRecording = false;
+            var result = new Dictionary<VirtualSensor, List<SensorData>>();
             foreach (var sensorDataPair in sensors)
             {
-                var sensorData =  sensorDataPair.Value.SelectMany(sensor => sensor.Data).OrderBy(data => data.time).ToList();
-                if (sensorData.Count == 0) continue;
-                // save results
-                var rootPath = Application.dataPath + "/../Data";
-                if (!Directory.Exists(rootPath))
+                foreach (var sensor in sensorDataPair.Value)
                 {
-                    Directory.CreateDirectory(rootPath);
+                    sensor.StopRecording();
+                    var sensorData = sensor.Data;
+                    if (sensorData.Count == 0) continue;
+                    result[sensor] = sensorData;
                 }
-                var path = $"{rootPath}/{sensorDataPair.Key.getSensorName().ToLower()}-{name}.csv";
-                using var writer = new StreamWriter(path);
-                writer.WriteLine($"tag,time,{sensorDataPair.Key.getCsvHeader()}");
-                foreach (var data in sensorData) {
-                    writer.WriteLine(data.ToCsvLine());
-                }
+                // var sensorData =  sensorDataPair.Value.SelectMany(sensor => sensor.Data).OrderBy(data => data.time).ToList();
+                // if (sensorData.Count == 0) continue;
+                // // save results
+                // var rootPath = Application.dataPath + "/../Data";
+                // if (!Directory.Exists(rootPath))
+                // {
+                //     Directory.CreateDirectory(rootPath);
+                // }
+                // var path = $"{rootPath}/{sensorDataPair.Key.getSensorName().ToLower()}-{name}.csv";
+                // using var writer = new StreamWriter(path);
+                // writer.WriteLine($"tag,time,{sensorDataPair.Key.getCsvHeader()}");
+                // foreach (var data in sensorData) {
+                //     writer.WriteLine(data.ToCsvLine());
+                // }
             }
+            return result;
         }
 
         public Dictionary<ISensorDefinition, List<SensorData>> SimulateSensorData(IAnimationRuntime animationRuntime, SimulationConfig config)

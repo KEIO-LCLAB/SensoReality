@@ -121,4 +121,27 @@ public static class Utils
         if (!asynchronous)
             request.WaitForCompletion();
     }
+    
+    public static string FormatTime(int totalSeconds)
+    {
+        var hours = totalSeconds / 3600;
+        var minutes = (totalSeconds % 3600) / 60;
+        var seconds = totalSeconds % 60;
+
+        var formattedTime = "";
+
+        if (hours > 0)
+        {
+            formattedTime += $"{hours}h";
+        }
+
+        if (minutes > 0)
+        {
+            formattedTime += $"{minutes}m";
+        }
+
+        formattedTime += $"{seconds}s";
+
+        return formattedTime;
+    }
 }

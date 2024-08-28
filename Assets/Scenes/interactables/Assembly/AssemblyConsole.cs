@@ -20,6 +20,40 @@ namespace Scenes.interactables.Assembly
         // arrow dictionary: key is the step, value is the out arrow
         private Dictionary<AssemblyStep, AssemblyArrow> arrows = new();
         public Dictionary<AssemblyStep, AssemblyArrow> Arrows => arrows;
+
+        public void RemoveStep(AssemblyStep step)
+        {
+            var nextStep = step.NextStep;
+            var previousStep = step.PreviousStep;
+            if (previousStep != null)
+            {
+                var previousArrow = arrows[previousStep];
+                previousStep.NextStep = nextStep;
+                if (nextStep != null)
+                {
+                    nextStep.PreviousStep = previousStep;
+                    previousArrow.setup(previousStep, nextStep);
+                    
+                }
+                else
+                {
+                    Destroy(previousArrow.gameObject);
+                    arrows.Remove(previousStep);
+                }
+            }
+            if (arrows.Remove(step, out var arrow))
+            {
+                Destroy(arrow.gameObject);
+            }
+            if (steps.Remove(step))
+            {
+                for (var i = step.StepIndex; i < steps.Count; i++)
+                {
+                    steps[i].StepIndex = i;
+                }
+            }
+            Destroy(step.gameObject);
+        }
         
         public void AppendLastStep()
         {
@@ -58,25 +92,25 @@ namespace Scenes.interactables.Assembly
             else
             {
                 // add after the specified step
+                var nextStep = after.NextStep;
                 steps.Insert(after.StepIndex + 1, newStep);
                 for (var i = after.StepIndex + 1; i < steps.Count; i++)
                 {
                     steps[i].StepIndex = i;
                 }
                 var index = after.transform.GetSiblingIndex();
-                newStep.transform.SetSiblingIndex(index + 1);
+                newStep.transform.SetSiblingIndex(index + 2);
                 
                 var previousArrow = arrows[after];
                 previousArrow.setup(after, newStep);
                 newStep.PreviousStep = after;
                 after.NextStep = newStep;
                 
-                var nextStep = after.NextStep;
                 var arrow = Instantiate(arrowPrefab, contentContainer.transform);
                 arrow.gameObject.SetActive(true);
                 arrows.Add(newStep, arrow);
                 arrow.setup(newStep, nextStep);
-                arrow.transform.SetSiblingIndex(index + 1);
+                arrow.transform.SetSiblingIndex(index + 3);
                 newStep.NextStep = nextStep;
                 nextStep.PreviousStep = newStep;
             }
