@@ -27,9 +27,16 @@ namespace Sensor
         public float modeSwitchTime = 1.0f;
         [Tooltip("jitter duration. the sensor will jitter for 1 second to notify the user that the sensor is in transform mode.")]
         public float jitterTime = 0.2f;
-
+        [Tooltip("The hand condition that the sensor can be controlled by.")]
+        public SensorAttachable.HandCondition controlledHand = SensorAttachable.HandCondition.Both;
+        [Tooltip("prefab of the sensor.")]
+        [SerializeField]
+        private GameObject prefab;
+        public GameObject Prefab => prefab;
         protected SensorDataCenter sensorDataCenter => SensorDataCenter.Instance;
         public Rigidbody Rigidbody => rigidbody;
+
+        
         
         /// <summary>
         /// to check if the sensor is working, if ture the sensor will collect data, otherwise it wont.
@@ -127,6 +134,7 @@ namespace Sensor
         /// if selectedTime bigger than durationForTransformMode, the sensor will be in transform mode,
         /// else it will be in selecting mode.
         /// </summary>
+        private IHand hand;
         private float selectedTime = -1;
         private SensorPlacement sensorPlacement;
         private Vector3 lastPosition;
@@ -163,11 +171,20 @@ namespace Sensor
 
         public override void ProcessPointerEvent(PointerEvent evt)
         {
+            var eventHand = DevicesRef.Instance.LeftHandGrabInteractor.Identifier == evt.Identifier ? DevicesRef.Instance.LeftHand : 
+                DevicesRef.Instance.RightHandGrabInteractor.Identifier == evt.Identifier ? DevicesRef.Instance.RightHand : null;
             base.ProcessPointerEvent(evt);
             if (evt.Type == PointerEventType.Select)
             {
+                if (eventHand != null && (controlledHand == SensorAttachable.HandCondition.None || 
+                    (controlledHand == SensorAttachable.HandCondition.Left && eventHand != DevicesRef.Instance.LeftHand) ||
+                    (controlledHand == SensorAttachable.HandCondition.Right && eventHand != DevicesRef.Instance.RightHand)))
+                {
+                    return;
+                }
                 selectedTime = 0;
                 lastPosition = transform.position;
+                hand = eventHand;
             }
             else if (selectedTime >= 0 && evt.Type == PointerEventType.Unselect)
             {
@@ -178,6 +195,7 @@ namespace Sensor
                 }
                 selectedTime = -1;
                 sensorPlacement = null;
+                hand = null;
             }
         }
 
@@ -212,11 +230,6 @@ namespace Sensor
                     if (sensorPlacement == null)
                     { // create sensor placement for the first time.
                         sensorPlacement = Rigidbody.AddComponent<SensorPlacement>();
-                        IHand hand = DevicesRef.Instance.RightHand;
-                        if (!hand.GetIndexFingerIsPinching() && DevicesRef.Instance.LeftHand.GetIndexFingerIsPinching())
-                        {
-                            hand = DevicesRef.Instance.LeftHand;
-                        }   
                         sensorPlacement.SetSensor(this, hand);
                     }
                     isSelected = false;

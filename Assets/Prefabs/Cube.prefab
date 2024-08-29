@@ -247,6 +247,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Parent: {fileID: 396287949332718288}
   HoverEffect: {fileID: 8581717287209547485}
+  handCondition: 2
 --- !u!114 &5362165436590964424
 MonoBehaviour:
   m_ObjectHideFlags: 0

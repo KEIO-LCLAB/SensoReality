@@ -35,6 +35,7 @@ namespace Scenes.interactables.Sensor
         
         public override void ProcessPointerEvent(PointerEvent evt)
         {
+            if (evt.Identifier == DevicesRef.Instance.LeftHandGrabInteractor.Identifier) return;
             if (evt.Type != PointerEventType.Select) return;
             var newSensor = Instantiate(sensorPrefab);
             newSensor.transform.position = sensorPreView.transform.position;

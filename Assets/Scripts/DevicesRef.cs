@@ -1,4 +1,5 @@
 using Oculus.Interaction;
+using Oculus.Interaction.HandGrab;
 using Oculus.Interaction.Input;
 using UnityEngine;
 
@@ -16,6 +17,12 @@ public class DevicesRef : MonoBehaviour
     [SerializeField, Interface(typeof(IHand))] 
     private Object _rightIHand;
     public IHand RightHand { get; private set; }
+    [SerializeField]
+    private HandGrabInteractor _leftHandGrabInteractor;
+    public HandGrabInteractor LeftHandGrabInteractor => _leftHandGrabInteractor;
+    [SerializeField]
+    private HandGrabInteractor _rightHandGrabInteractor;
+    public HandGrabInteractor RightHandGrabInteractor => _rightHandGrabInteractor;
     
 
     public void Awake()

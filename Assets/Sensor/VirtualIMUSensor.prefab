@@ -130,6 +130,8 @@ MonoBehaviour:
   rigidbody: {fileID: 932779791524461956}
   modeSwitchTime: 1
   jitterTime: 0.2
+  controlledHand: 2
+  prefab: {fileID: 3534786048013251570}
   AnchorVisual: {fileID: 376156176303673728}
 --- !u!114 &5907861347563984430
 MonoBehaviour:

@@ -507,6 +507,8 @@ MonoBehaviour:
   rigidbody: {fileID: 4072009076499124011}
   modeSwitchTime: 1
   jitterTime: 0.2
+  controlledHand: 2
+  prefab: {fileID: 3534786048013251570}
   validDistance: 3
   barChart: {fileID: 7855963295389892336}
   indicatorLine: {fileID: 7588307997344655361}

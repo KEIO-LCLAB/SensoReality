@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Animations;
 using Sensor;
 using TMPro;
@@ -13,29 +14,31 @@ namespace Scenes.interactables.Assembly
     {
         public class StepRecord
         {
-            public Dictionary<string, SensorData[]> sensorData;
+            public List<SensorReplayData> sensors;
             public HandGestureAnimation gestureAnimation;
         }
 
+        [SerializeField] private AssemblyReplayView replayView;
+        
         [SerializeField] 
         private TextMeshProUGUI timeText;
         [SerializeField]
         private TextMeshProUGUI numberText;
         [SerializeField]
         private AssemblyConsole console;
-
+        [SerializeField]
+        private Button replayButton;
         [SerializeField] private Image numberTag;
         [SerializeField] private GameObject actionGroup;
-        [SerializeField] private GameObject sensorGroup;
         
         
         // runtime
         [AllowNull]
         private StepRecord _stepRecord;
         public StepRecord Record => _stepRecord;
+        public bool HasRecord => _stepRecord != null;
         private bool isRecording;
         private float recordingTime;
-        private bool isSensorView;
         private int stepIndex;
         public int StepIndex
         {
@@ -53,39 +56,38 @@ namespace Scenes.interactables.Assembly
         void Start()
         {
             StepIndex = stepIndex;
-            ChangeView(false);
+            replayButton.onClick.AddListener(ReplayRecord);
         }
-        
-        public void SwitchView()
+
+        public void ReplayRecord()
         {
-            ChangeView(!isSensorView);
-        }
-        
-        public void ChangeView(bool isSensorView)
-        {
-            if (_stepRecord == null)
+            if (HasRecord)
             {
-                isSensorView = false;
+                replayView.Show();
+                replayView.SetupRecord(_stepRecord);
             }
-            this.isSensorView = isSensorView;
-            numberTag.color = isSensorView ? Color.green: new Color(206/255f, 207/255f,208/255f);
-            actionGroup.SetActive(!isSensorView);
-            sensorGroup.SetActive(isSensorView);
         }
 
         public void SetupRecord(StepRecord record)
         {
+            replayButton.gameObject.SetActive(true);
             _stepRecord = record;
+            HandRecordingCenter.Instance.SnapCanvasInFrontOfCamera();
             var leftPlayer = HandRecordingCenter.Instance.LeftHandAnimationPlayer; 
+            leftPlayer.ClearSensors();
+            leftPlayer.AddSensors(record.sensors);
             leftPlayer.SetAnimation(record.gestureAnimation);
             leftPlayer.PlayAnimation();
             var rightPlayer = HandRecordingCenter.Instance.RightHandAnimationPlayer;
+            rightPlayer.ClearSensors();
+            rightPlayer.AddSensors(record.sensors);
             rightPlayer.SetAnimation(record.gestureAnimation);
             rightPlayer.PlayAnimation();
         }
         
         public void StartRecording()
         {
+            numberTag.color = Color.green;
             isRecording = true;
             SensorDataCenter.Instance.StartRecording();
             HandRecordingCenter.Instance.StartRecording();
@@ -96,14 +98,14 @@ namespace Scenes.interactables.Assembly
         {
             isRecording = false;
             var sensorData = SensorDataCenter.Instance.StopRecording();
+            var sensors = sensorData.Select(pair => new SensorReplayData(pair.Key, pair.Value.ToArray())).ToList();
             var gestureAnimation = HandRecordingCenter.Instance.StopRecording();
             var record = new StepRecord()
             {
-                sensorData = null,
+                sensors = sensors,
                 gestureAnimation = gestureAnimation
             };
             SetupRecord(record);
-            ChangeView(true);
         }
 
         public void RemoveStep()

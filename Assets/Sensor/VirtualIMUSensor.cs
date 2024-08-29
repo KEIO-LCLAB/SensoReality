@@ -11,7 +11,7 @@ namespace Sensor
 
         public static readonly ISensorDefinition DEFINITION = ISensorDefinition.create("IMU", "ex,ey,ez,ax,ay,az,lx,ly,lz,x,y,z");
     
-        private struct IMUSensorData : ISensorData
+        public struct IMUSensorData : ISensorData
         {
             public Vector3 Orientation;
             public Vector3 Acceleration;

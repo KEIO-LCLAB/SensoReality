@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Animations;
@@ -27,12 +28,12 @@ public class HandRecordingCenter : MonoBehaviour
     private bool isRecording;
     private float recordingTime;
     private Pose leftHandInitialPose;
-    private Pose rightHandInitialPose;
     private List<HandGestureKeyFrame> leftHandGestureKeyFrames = new();
     private List<HandGestureKeyFrame> rightHandGestureKeyFrames = new();
     
     void Start()
     {
+        StartCoroutine(SnapCanvasInFrontOfCameraCoroutine());
         if (INSTANCE != null)
         {
             Debug.LogError("There are multiple HandRecordingCenter in the scene.");
@@ -44,7 +45,6 @@ public class HandRecordingCenter : MonoBehaviour
     {
         isRecording = true;
         leftHandInitialPose = leftVisualHand.Root.GetPose();
-        rightHandInitialPose = rightVisualHand.Root.GetPose();
         leftHandGestureKeyFrames.Clear();
         rightHandGestureKeyFrames.Clear();
         recordingTime = 0;
@@ -88,4 +88,16 @@ public class HandRecordingCenter : MonoBehaviour
         };
     }
 
+    public void SnapCanvasInFrontOfCamera()
+    {
+        var cameraRig = DevicesRef.Instance.CameraRigRef.CameraRig;
+        transform.position = cameraRig.centerEyeAnchor.transform.position +
+                             cameraRig.centerEyeAnchor.transform.forward * 0.4f;
+    }
+    
+    public IEnumerator SnapCanvasInFrontOfCameraCoroutine()
+    {
+        yield return 0; // wait one frame to make sure the camera is set up
+        SnapCanvasInFrontOfCamera();
+    }
 }

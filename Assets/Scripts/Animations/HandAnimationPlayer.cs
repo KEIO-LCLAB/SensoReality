@@ -1,5 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
+using Oculus.Interaction;
 using Oculus.Interaction.Input;
+using Scenes.interactables.Assembly;
+using Sensor;
 using UnityEngine;
 
 namespace Animations
@@ -20,9 +24,12 @@ namespace Animations
         public IList<Transform> Joints => _jointTransforms;
         
         // runtime
+        private int lastIndex = -1;
         private HandGestureAnimation _animation;
         private bool _isPlaying;
         private float _time;
+
+        private List<VirtualSensor> _virtualSensors = new();
         
         // Start is called before the first frame update
         void Start()
@@ -33,6 +40,31 @@ namespace Animations
         public void SetAnimation(HandGestureAnimation animation)
         {
             _animation = animation;
+            lastIndex = -1;
+        }
+        
+        public void AddSensors(List<SensorReplayData> sensors)
+        {
+            foreach (var replayData in sensors.Where(replayData => !replayData.isLeftHand || handedness == Handedness.Left))
+            {
+                foreach (var joint in Joints)
+                {
+                    if (joint.name != replayData.skeletonName) continue;
+                    var sensor = Instantiate(replayData.prefab, joint).GetComponent<VirtualSensor>(); 
+                    sensor.transform.SetPose(replayData.localPose, Space.Self);
+                    _virtualSensors.Add(sensor);
+                    break;
+                }
+            }
+        }
+        
+        public void ClearSensors()
+        {
+            foreach (var sensor in _virtualSensors)
+            {
+                Destroy(sensor.gameObject);
+            }
+            _virtualSensors.Clear();
         }
         
         public void PlayAnimation()
@@ -52,10 +84,17 @@ namespace Animations
             if (keyFrames.Length == 0)
                 return;
             // find key frame
-            var lastFrame = keyFrames[0];
-            foreach (var keyFrame in keyFrames)
+            if (lastIndex < 0 || lastIndex >= keyFrames.Length)
+                lastIndex = 0;
+            if (keyFrames[lastIndex].time > time)
             {
-                if (keyFrame.time == time)
+                lastIndex = 0;
+            }
+            var lastFrame = keyFrames[lastIndex];
+            for (var i = lastIndex; i < keyFrames.Length; i++)
+            {
+                var keyFrame = keyFrames[i];
+                if (Mathf.Approximately(keyFrame.time, time))
                 {
                     lastFrame = keyFrame;
                     break;
@@ -68,6 +107,7 @@ namespace Animations
                     break;
                 } 
                 lastFrame = keyFrame;
+                lastIndex = i;
             }
             // apply key frame
             _root.localPosition = lastFrame.rootPose.position;

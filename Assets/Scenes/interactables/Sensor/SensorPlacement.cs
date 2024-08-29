@@ -13,6 +13,7 @@ namespace Scenes.interactables.Sensor
         [AllowNull]
         private SensorAttachable sensorAttachableCollided;
         private bool shouldTransform;
+        [AllowNull]
         private IHand hand;
         
         public void SetSensor(VirtualSensor virtualSensor, IHand hand, bool shouldUseTransform = false)

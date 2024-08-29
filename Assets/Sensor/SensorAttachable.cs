@@ -20,9 +20,12 @@ namespace Sensor
         public GameObject HoverEffect;
         [Tooltip("The hand condition that the sensor can attach by.")]
         public HandCondition handCondition = HandCondition.Both;
+        [Tooltip("The hand condition that the sensor can be controlled by.")]
+        public HandCondition controlledHand = HandCondition.Both;
         
-        public virtual bool CanAttachTo(VirtualSensor sensor, IHand usedHand)
+        public virtual bool CanAttachTo(VirtualSensor sensor, IHand usedHand = null)
         {
+            if (usedHand == null) return true;
             if (handCondition == HandCondition.Left && usedHand == DevicesRef.Instance.LeftHand)
             {
                 return true;
@@ -51,6 +54,7 @@ namespace Sensor
             {
                 sensor.transform.SetParent(transform);
             }
+            sensor.controlledHand = controlledHand;
         }
         
         public virtual void OnAttachHover(VirtualSensor sensor)
