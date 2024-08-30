@@ -65,6 +65,17 @@ namespace Scenes.interactables.Assembly
             {
                 replayView.Show();
                 replayView.SetupRecord(_stepRecord);
+                HandRecordingCenter.Instance.SnapCanvasInFrontOfCamera();
+                var leftPlayer = HandRecordingCenter.Instance.LeftHandAnimationPlayer; 
+                leftPlayer.ClearSensors();
+                leftPlayer.AddSensors(_stepRecord.sensors);
+                leftPlayer.SetAnimation(_stepRecord.gestureAnimation);
+                leftPlayer.PlayAnimation();
+                var rightPlayer = HandRecordingCenter.Instance.RightHandAnimationPlayer;
+                rightPlayer.ClearSensors();
+                rightPlayer.AddSensors(_stepRecord.sensors);
+                rightPlayer.SetAnimation(_stepRecord.gestureAnimation);
+                rightPlayer.PlayAnimation();
             }
         }
 
@@ -72,22 +83,10 @@ namespace Scenes.interactables.Assembly
         {
             replayButton.gameObject.SetActive(true);
             _stepRecord = record;
-            HandRecordingCenter.Instance.SnapCanvasInFrontOfCamera();
-            var leftPlayer = HandRecordingCenter.Instance.LeftHandAnimationPlayer; 
-            leftPlayer.ClearSensors();
-            leftPlayer.AddSensors(record.sensors);
-            leftPlayer.SetAnimation(record.gestureAnimation);
-            leftPlayer.PlayAnimation();
-            var rightPlayer = HandRecordingCenter.Instance.RightHandAnimationPlayer;
-            rightPlayer.ClearSensors();
-            rightPlayer.AddSensors(record.sensors);
-            rightPlayer.SetAnimation(record.gestureAnimation);
-            rightPlayer.PlayAnimation();
         }
         
         public void StartRecording()
         {
-            numberTag.color = Color.green;
             isRecording = true;
             SensorDataCenter.Instance.StartRecording();
             HandRecordingCenter.Instance.StartRecording();
@@ -96,6 +95,7 @@ namespace Scenes.interactables.Assembly
 
         public void StopRecording()
         {
+            numberTag.color = Color.green;
             isRecording = false;
             var sensorData = SensorDataCenter.Instance.StopRecording();
             var sensors = sensorData.Select(pair => new SensorReplayData(pair.Key, pair.Value.ToArray())).ToList();
