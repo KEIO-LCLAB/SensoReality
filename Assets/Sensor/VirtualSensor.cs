@@ -30,9 +30,9 @@ namespace Sensor
         [Tooltip("The hand condition that the sensor can be controlled by.")]
         public SensorAttachable.HandCondition controlledHand = SensorAttachable.HandCondition.Both;
         [Tooltip("prefab of the sensor.")]
-        [SerializeField]
-        private GameObject prefab;
-        public GameObject Prefab => prefab;
+        [HideInInspector]
+        public GameObject prefab;
+        public bool showSelectedVisualization = true;
         protected SensorDataCenter sensorDataCenter => SensorDataCenter.Instance;
         public Rigidbody Rigidbody => rigidbody;
 
@@ -112,7 +112,10 @@ namespace Sensor
                         _SelectedSensor.isSelected = false;
                     }
                     onSelectedChanged?.Invoke(true);
-                    selectedVisualization?.SetActive(true);
+                    if (showSelectedVisualization)
+                    {
+                        selectedVisualization?.SetActive(true);
+                    }
                     _SelectedSensor = this;
                 }
                 else if (_SelectedSensor == this)

@@ -10,7 +10,7 @@ public class ToggleChecker : MonoBehaviour
     [SerializeField] private bool reverseToggle;
     
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         if (_toggle == null)
         {

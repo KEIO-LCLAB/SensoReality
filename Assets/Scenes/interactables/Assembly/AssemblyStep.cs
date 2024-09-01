@@ -65,17 +65,6 @@ namespace Scenes.interactables.Assembly
             {
                 replayView.Show();
                 replayView.SetupRecord(_stepRecord);
-                HandRecordingCenter.Instance.SnapCanvasInFrontOfCamera();
-                var leftPlayer = HandRecordingCenter.Instance.LeftHandAnimationPlayer; 
-                leftPlayer.ClearSensors();
-                leftPlayer.AddSensors(_stepRecord.sensors);
-                leftPlayer.SetAnimation(_stepRecord.gestureAnimation);
-                leftPlayer.PlayAnimation();
-                var rightPlayer = HandRecordingCenter.Instance.RightHandAnimationPlayer;
-                rightPlayer.ClearSensors();
-                rightPlayer.AddSensors(_stepRecord.sensors);
-                rightPlayer.SetAnimation(_stepRecord.gestureAnimation);
-                rightPlayer.PlayAnimation();
             }
         }
 

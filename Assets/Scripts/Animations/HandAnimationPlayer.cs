@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Oculus.Interaction;
@@ -28,6 +29,8 @@ namespace Animations
         private HandGestureAnimation _animation;
         private bool _isPlaying;
         private float _time;
+        
+        private HandGestureAnimation Animation => _animation;
 
         private List<VirtualSensor> _virtualSensors = new();
         
@@ -43,18 +46,28 @@ namespace Animations
             lastIndex = -1;
         }
         
-        public void AddSensors(List<SensorReplayData> sensors)
+        public void AddSensors(List<SensorReplayData> sensors, Action<SensorReplayData, bool> onSensorSelected)
         {
             foreach (var replayData in sensors.Where(replayData => !replayData.isLeftHand || handedness == Handedness.Left))
             {
                 foreach (var joint in Joints)
                 {
                     if (joint.name != replayData.skeletonName) continue;
-                    var sensor = Instantiate(replayData.prefab, joint).GetComponent<VirtualSensor>(); 
+                    var sensor = Instantiate(replayData.prefab, joint).GetComponent<VirtualSensor>();
+                    sensor.showSelectedVisualization = false;
+                    sensor.onSelectedChanged += isSelected =>
+                    {
+                        onSensorSelected?.Invoke(replayData, isSelected);
+                    };
                     sensor.transform.SetPose(replayData.localPose, Space.Self);
                     _virtualSensors.Add(sensor);
                     break;
                 }
+            }
+
+            if (_virtualSensors.Count > 0)
+            {
+                _virtualSensors[0].isSelected = true;
             }
         }
         
@@ -73,7 +86,18 @@ namespace Animations
             PlayTo(0);
             skinnedMeshRenderer.enabled = true;
         }
+        
+        public void StopAnimation()
+        {
+            Pause();
+            skinnedMeshRenderer.enabled = false;
+        }
 
+        public void PlayToProgress(float progress)
+        {
+            PlayTo(progress * _animation?.Duration ?? 0);
+        }
+        
         public void PlayTo(float time)
         {
             if (_animation == null)

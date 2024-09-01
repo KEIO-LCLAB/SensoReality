@@ -42,6 +42,7 @@ namespace Scenes.interactables.Sensor
             newSensor.transform.rotation = sensorPreView.transform.rotation;
             if (newSensor.TryGetComponent(out VirtualSensor virtualSensor))
             {
+                virtualSensor.prefab = sensorPrefab;
                 virtualSensor.Rigidbody.AddComponent<SensorPlacement>().SetSensor(virtualSensor, DevicesRef.Instance.RightHand, true);
                 SensorDataCenter.Instance.RegisterSensor(virtualSensor);
             }

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Sensor;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using XCharts.Runtime;
 
 namespace Scenes.interactables.Assembly
@@ -11,7 +13,46 @@ namespace Scenes.interactables.Assembly
         [SerializeField] private GameObject stepView;
         [SerializeField] private LineChart orientationChart;
         [SerializeField] private LineChart accelerationChart;
+        [SerializeField] private Toggle playToggle;
         
+        // runtime
+        private AssemblyStep.StepRecord record;
+        
+        void Awake()
+        {
+            playToggle.onValueChanged.AddListener(OnToggleClicked);
+            orientationChart.onDrag = OnChartDrag;
+            accelerationChart.onDrag = OnChartDrag;
+        }
+
+        private void OnChartDrag(PointerEventData eventData, BaseGraph graph)
+        {
+            if (record == null) return;
+            var leftPlayer = HandRecordingCenter.Instance.LeftHandAnimationPlayer; 
+            var rightPlayer = HandRecordingCenter.Instance.RightHandAnimationPlayer;
+            var progress = Mathf.Clamp((eventData.position.x - 1150) / 100f, 0, 1);
+            playToggle.isOn = false;
+            leftPlayer.PlayToProgress(progress);
+            rightPlayer.PlayToProgress(progress);
+        }
+
+        private void OnToggleClicked(bool isOn)
+        {
+            if (record == null) return;
+            var leftPlayer = HandRecordingCenter.Instance.LeftHandAnimationPlayer; 
+            var rightPlayer = HandRecordingCenter.Instance.RightHandAnimationPlayer;
+            if (isOn)
+            {
+                leftPlayer.Play();
+                rightPlayer.Play();
+            }
+            else
+            {
+                leftPlayer.Pause();
+                rightPlayer.Pause();
+            }
+        }
+
         public void Show()
         {
             gameObject.SetActive(true);
@@ -24,26 +65,66 @@ namespace Scenes.interactables.Assembly
             stepView.SetActive(true);
         }
 
-        public void SetupRecord(AssemblyStep.StepRecord record)
+        public void ClearRecord()
         {
-            var sensor = record.sensors[0];
-            var orientationData = new List<Tuple<float, float[]>>();
-            var accelerationData = new List<Tuple<float, float[]>>();
-            foreach (var sensorData in sensor.sensorData)
+            record = null;
+            playToggle.isOn = false;
+            orientationChart.ClearData();
+            accelerationChart.ClearData();
+            
+            var leftPlayer = HandRecordingCenter.Instance.LeftHandAnimationPlayer; 
+            leftPlayer.ClearSensors();
+            leftPlayer.StopAnimation();
+            var rightPlayer = HandRecordingCenter.Instance.RightHandAnimationPlayer;
+            rightPlayer.ClearSensors();
+            rightPlayer.StopAnimation();
+        }
+        
+        public void SetupRecord(AssemblyStep.StepRecord stepRecord)
+        {
+            record = stepRecord;
+            playToggle.isOn = true;
+            // animation
+            HandRecordingCenter.Instance.SnapCanvasInFrontOfCamera();
+            var leftPlayer = HandRecordingCenter.Instance.LeftHandAnimationPlayer; 
+            leftPlayer.ClearSensors();
+            leftPlayer.AddSensors(record.sensors, OnReplaySensorSelected);
+            leftPlayer.SetAnimation(record.gestureAnimation);
+            leftPlayer.PlayAnimation();
+            var rightPlayer = HandRecordingCenter.Instance.RightHandAnimationPlayer;
+            rightPlayer.ClearSensors();
+            rightPlayer.AddSensors(record.sensors, OnReplaySensorSelected);
+            rightPlayer.SetAnimation(record.gestureAnimation);
+            rightPlayer.PlayAnimation();
+        }
+
+        private void OnReplaySensorSelected(SensorReplayData sensorReplayData, bool isSelected)
+        {
+            if (isSelected)
             {
-                if (sensorData.data is VirtualIMUSensor.IMUSensorData)
+                var orientationData = new List<Tuple<float, float[]>>();
+                var accelerationData = new List<Tuple<float, float[]>>();
+                foreach (var sensorData in sensorReplayData.sensorData)
                 {
-                    var imuData = (VirtualIMUSensor.IMUSensorData)sensorData.data;
-                    orientationData.Add(new Tuple<float, float[]>(
-                        sensorData.time, 
-                        new [] {imuData.Orientation.x, imuData.Orientation.y, imuData.Orientation.z}));
-                    accelerationData.Add(new Tuple<float, float[]>(
-                        sensorData.time,
-                        new []{imuData.Acceleration.x, imuData.Acceleration.y, imuData.Acceleration.z}));
+                    if (sensorData.data is VirtualIMUSensor.IMUSensorData)
+                    {
+                        var imuData = (VirtualIMUSensor.IMUSensorData)sensorData.data;
+                        orientationData.Add(new Tuple<float, float[]>(
+                            sensorData.time, 
+                            new [] {imuData.Orientation.x, imuData.Orientation.y, imuData.Orientation.z}));
+                        accelerationData.Add(new Tuple<float, float[]>(
+                            sensorData.time,
+                            new []{imuData.Acceleration.x, imuData.Acceleration.y, imuData.Acceleration.z}));
+                    }
                 }
+                UpdateLineChart(orientationChart, orientationData);
+                UpdateLineChart(accelerationChart, accelerationData);
             }
-            UpdateLineChart(orientationChart, orientationData);
-            UpdateLineChart(accelerationChart, accelerationData);
+            else
+            {
+                orientationChart.ClearData();
+                accelerationChart.ClearData();
+            }
         }
         
         public void UpdateLineChart(LineChart lineChartController, List<Tuple<float, float[]>> data) {

@@ -19,7 +19,7 @@ namespace Scenes.interactables.Assembly
             skeletonName = sensor.transform.parent.name;
             localPose = sensor.transform.GetPose(Space.Self);
             isLeftHand = sensor.controlledHand == SensorAttachable.HandCondition.Right;
-            prefab = sensor.Prefab;
+            prefab = sensor.prefab;
         }
     }
 }
