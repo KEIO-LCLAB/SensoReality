@@ -32,7 +32,8 @@ namespace Animations
         
         private HandGestureAnimation Animation => _animation;
 
-        private List<VirtualSensor> _virtualSensors = new();
+        private Dictionary<VirtualSensor, SensorReplayData> _virtualSensors = new();
+        private VirtualSensor selectedSensor;
         
         // Start is called before the first frame update
         void Start()
@@ -57,17 +58,62 @@ namespace Animations
                     sensor.showSelectedVisualization = false;
                     sensor.onSelectedChanged += isSelected =>
                     {
-                        onSensorSelected?.Invoke(replayData, isSelected);
+                        if (isSelected)
+                        {
+                            selectedSensor = sensor;
+                            onSensorSelected?.Invoke(replayData, true);
+                        }
                     };
                     sensor.transform.SetPose(replayData.localPose, Space.Self);
-                    _virtualSensors.Add(sensor);
+                    _virtualSensors.Add(sensor, replayData);
                     break;
                 }
             }
 
             if (_virtualSensors.Count > 0)
             {
-                _virtualSensors[0].isSelected = true;
+                _virtualSensors.Keys.First().isSelected = true;
+            }
+        }
+        
+        public void updateSensorDataByAnimation()
+        {
+            var lastTime = _time;
+            Pause();
+            PlayTo(0);
+            foreach (var sensorPair in _virtualSensors)
+            {
+                var sensor = sensorPair.Key;
+                sensor.ClearData();
+                sensor.ClearSmoothCache();
+                sensor.StartRecording();
+            }
+            var time = 0f;
+            var deltaTime = 1/60f;
+            while (time < _animation.Duration)
+            {
+                PlayTo(time);
+                foreach (var sensorPair in _virtualSensors)
+                {
+                    var sensor = sensorPair.Key;
+                    sensor.UpdateWorking(time, deltaTime);
+                }
+                time += deltaTime;
+            }
+            foreach (var sensorPair in _virtualSensors)
+            {
+                var sensor = sensorPair.Key;
+                sensor.StopRecording();
+                var sensorData = sensor.Data;
+                sensorPair.Value.sensorData = sensorData.ToArray();
+                sensorPair.Value.localPose = sensor.transform.GetPose(Space.Self);
+            }
+            PlayTo(lastTime);
+            // notify sensor data changed
+            if (selectedSensor != null)
+            {
+                selectedSensor.isSelected = false;
+                selectedSensor.isSelected = true;
             }
         }
         
@@ -75,9 +121,10 @@ namespace Animations
         {
             foreach (var sensor in _virtualSensors)
             {
-                Destroy(sensor.gameObject);
+                Destroy(sensor.Key.gameObject);
             }
             _virtualSensors.Clear();
+            selectedSensor = null;
         }
         
         public void PlayAnimation()
@@ -97,7 +144,12 @@ namespace Animations
         {
             PlayTo(progress * _animation?.Duration ?? 0);
         }
-        
+
+        public float GetProgress()
+        {
+            return _time / (_animation?.Duration ?? 1);
+        }
+
         public void PlayTo(float time)
         {
             if (_animation == null)

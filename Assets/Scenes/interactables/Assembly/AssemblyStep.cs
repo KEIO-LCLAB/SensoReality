@@ -31,12 +31,12 @@ namespace Scenes.interactables.Assembly
         [SerializeField] private Image numberTag;
         [SerializeField] private GameObject actionGroup;
         
-        
         // runtime
         [AllowNull]
         private StepRecord _stepRecord;
         public StepRecord Record => _stepRecord;
         public bool HasRecord => _stepRecord != null;
+        private bool isPrepareForRecording;
         private bool isRecording;
         private float recordingTime;
         private int stepIndex;
@@ -49,6 +49,10 @@ namespace Scenes.interactables.Assembly
                 numberText.text = (stepIndex + 1).ToString();
             }
         }
+
+        private float pinchTime;
+        private bool isPinched;
+        private int pinchCount;
 
         public AssemblyStep PreviousStep { get; set; }
         public AssemblyStep NextStep { get; set; }
