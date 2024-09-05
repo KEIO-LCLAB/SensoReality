@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Animations;
+using OVRSimpleJSON;
 using Sensor;
 using TMPro;
 using UnityEngine;
@@ -91,7 +92,9 @@ namespace Scenes.interactables.Assembly
             numberTag.color = Color.green;
             isRecording = false;
             var sensorData = SensorDataCenter.Instance.StopRecording();
-            var sensors = sensorData.Select(pair => new SensorReplayData(pair.Key, pair.Value.ToArray())).ToList();
+            var sensors = 
+                sensorData.Where(pair => pair.Key.transform.parent != null)
+                .Select(pair => new SensorReplayData(pair.Key, pair.Value.ToArray())).ToList();
             var gestureAnimation = HandRecordingCenter.Instance.StopRecording();
             var record = new StepRecord()
             {
@@ -116,6 +119,27 @@ namespace Scenes.interactables.Assembly
                 numberTag.color = Color.Lerp(Color.green, new Color(206/255f, 207/255f,208/255f), 
                     Mathf.PingPong(recordingTime, 1));
             }
+        }
+
+        public JSONObject serialize()
+        {
+            var json = new JSONObject();
+            json["step_index"] = StepIndex;
+            var leftTrimProgress = replayView.LeftTrimProgress;
+            var rightTrimProgress = replayView.RightTrimProgress;
+            if (HasRecord)
+            {
+                var sensors = new JSONArray();
+                foreach (var sensor in _stepRecord.sensors)
+                {
+                    sensors.Add(sensor.serialize(leftTrimProgress, rightTrimProgress));
+                }
+                json["sensor_data"] = sensors;
+                // TODO implement gesture animation serialization
+                // json["gesture"] = _stepRecord.gestureAnimation.serialize();
+            }
+            json["recording_duration"] = recordingTime * (rightTrimProgress - leftTrimProgress);
+            return json;
         }
     }
 }

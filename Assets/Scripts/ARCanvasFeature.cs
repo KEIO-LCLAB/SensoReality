@@ -12,6 +12,8 @@ public class ARCanvasFeature : MonoBehaviour
     private CanvasGroup CanvasGroup;
     [SerializeField, Tooltip("Face the canvas to the camera.")]
     private bool FaceToCamera = true;
+    [SerializeField, Tooltip("Face the canvas to the camera.")]
+    private bool HeadUp = true;
     [Tooltip("The duration of the fade in and out.")]
     public float FadeDuration = 0.25f;
     public Action OnCanvasClose;
@@ -57,6 +59,10 @@ public class ARCanvasFeature : MonoBehaviour
             transform.LookAt(cameraRig.centerEyeAnchor);
             // 180 degree rotation on y axis to face the camera
             transform.Rotate(0, 180, 0);
+        } else if (HeadUp)
+        {
+            var forward = transform.forward;
+            transform.LookAt(transform.position + forward);
         }
     }
     

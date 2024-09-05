@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OVRSimpleJSON;
 using Sensor.visualization;
 using UnityEngine;
 
@@ -20,6 +21,18 @@ namespace Sensor
             public string ToCsvLine()
             {
                 return $"{Orientation.x},{Orientation.y},{Orientation.z},{Acceleration.x},{Acceleration.y},{Acceleration.z},{LocalAcceleration.x},{LocalAcceleration.y},{LocalAcceleration.z},{Location.x},{Location.y},{Location.z}";
+            }
+
+            public JSONNode serialize()
+            {
+                var json = new JSONObject
+                {
+                    ["orientation"] = Utils.SerializeVector3(Orientation),
+                    ["acceleration"] = Utils.SerializeVector3(Acceleration),
+                    ["localAcceleration"] = Utils.SerializeVector3(LocalAcceleration),
+                    ["location"] = Utils.SerializeVector3(Location)
+                };
+                return json;
             }
         }
     

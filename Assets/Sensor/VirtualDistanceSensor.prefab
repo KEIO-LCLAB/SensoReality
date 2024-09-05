@@ -482,6 +482,7 @@ Transform:
   - {fileID: 2574745287978897707}
   - {fileID: 1031751813206669708}
   - {fileID: 8758622070570269094}
+  - {fileID: 4528965032001431935}
   - {fileID: 4682254892700382736}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -503,12 +504,14 @@ MonoBehaviour:
   inActiveVisualization: {fileID: 3703638239292977620}
   preview: {fileID: 327333853468886311}
   selectedVisualization: {fileID: 8579969796150945143}
+  visualBox: {fileID: 4215862516616444306}
   graphChart: {fileID: 8193291974348185200}
   rigidbody: {fileID: 4072009076499124011}
   modeSwitchTime: 1
   jitterTime: 0.2
   controlledHand: 2
   prefab: {fileID: 3534786048013251570}
+  showSelectedVisualization: 1
   validDistance: 3
   barChart: {fileID: 7855963295389892336}
   indicatorLine: {fileID: 7588307997344655361}
@@ -636,7 +639,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4528965032001431935
 Transform:
   m_ObjectHideFlags: 0
@@ -650,7 +653,7 @@ Transform:
   m_LocalScale: {x: 0.13, y: 0.13, z: 0.13}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1031751813206669708}
+  m_Father: {fileID: 4871527707680380044}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5237083060923984357
 MeshFilter:
@@ -1347,7 +1350,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4528965032001431935}
   - {fileID: 5939263623703939781}
   m_Father: {fileID: 4871527707680380044}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

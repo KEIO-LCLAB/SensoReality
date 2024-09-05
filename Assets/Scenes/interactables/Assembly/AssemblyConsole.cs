@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using OVRSimpleJSON;
 using UnityEngine;
 
 namespace Scenes.interactables.Assembly
@@ -114,6 +116,21 @@ namespace Scenes.interactables.Assembly
                 newStep.NextStep = nextStep;
                 nextStep.PreviousStep = newStep;
             }
+        }
+
+        public void DownloadAssemblyGraphData()
+        {
+            var assemblyData = new JSONObject();
+            var stepsData = new JSONArray();
+            foreach (var assemblyStep in Steps)
+            {
+                stepsData.Add(assemblyStep.serialize());
+            }
+            assemblyData["steps"] = stepsData;
+            var timestamp = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+            var path = Application.persistentDataPath + $"/assembly_{timestamp}.json";
+            var json = assemblyData.ToString(4);
+            System.IO.File.WriteAllText(path, json);
         }
     }
 }

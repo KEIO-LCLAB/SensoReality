@@ -18,6 +18,8 @@ namespace Sensor
         [SerializeField] [AllowNull] protected GameObject preview;
         [Tooltip("to visualize the object when it is selected.")]
         [SerializeField] [AllowNull] protected GameObject selectedVisualization;
+        [Tooltip("to visualize the object when it is selected.")]
+        [SerializeField] [AllowNull] protected GameObject visualBox;
         [FormerlySerializedAs("graphController")]
         [Tooltip("to visualize the Graph Chart.")]
         [SerializeField] [AllowNull] protected GameObject graphChart;
@@ -116,12 +118,14 @@ namespace Sensor
                     {
                         selectedVisualization?.SetActive(true);
                     }
+                    visualBox?.SetActive(true);
                     _SelectedSensor = this;
                 }
                 else if (_SelectedSensor == this)
                 {
                     onSelectedChanged?.Invoke(false);
                     selectedVisualization?.SetActive(false);
+                    visualBox?.SetActive(false);
                     _SelectedSensor = null;
                 }
             }

@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using OVRSimpleJSON;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -143,5 +144,26 @@ public static class Utils
         formattedTime += $"{seconds}s";
 
         return formattedTime;
+    }
+    
+    public static JSONObject SerializeVector3(Vector3 vector3)
+    {
+        var json = new JSONObject
+        {
+            ["x"] = vector3.x,
+            ["y"] = vector3.y,
+            ["z"] = vector3.z
+        };
+        return json;
+    }
+    
+    public static JSONObject SerializePose(Pose pose)
+    {
+        var json = new JSONObject
+        {
+            ["position"] = SerializeVector3(pose.position),
+            ["rotation"] = SerializeVector3(pose.rotation.eulerAngles)
+        };
+        return json;
     }
 }

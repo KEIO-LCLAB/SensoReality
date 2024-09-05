@@ -186,7 +186,7 @@ namespace Animations
                 lastIndex = i;
             }
             // apply key frame
-            _root.localPosition = lastFrame.rootPose.position;
+            _root.localPosition = lastFrame.rootPose.position + lastFrame.worldOffset;
             _root.localRotation = lastFrame.rootPose.rotation;
             for (var i = 0; i < _jointTransforms.Count; i++)
             {

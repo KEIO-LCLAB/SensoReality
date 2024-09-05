@@ -8,6 +8,7 @@ namespace Animations
     {
         public float time;
         public Pose rootPose;
+        public Vector3 worldOffset;
         public List<Pose> handJointPoses;
         
         public static HandGestureKeyFrame Lerp(HandGestureKeyFrame a, HandGestureKeyFrame b, float t)
@@ -18,6 +19,7 @@ namespace Animations
             PoseUtils.Lerp(a.rootPose, b.rootPose, t, ref output);
             result.rootPose = output;
             result.handJointPoses = new List<Pose>();
+            result.worldOffset = Vector3.Lerp(a.worldOffset, b.worldOffset, t);
             for (var i = 0; i < a.handJointPoses.Count; i++)
             {
                 var pose = new Pose();

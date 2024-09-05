@@ -20,24 +20,51 @@ namespace Scenes.interactables.Assembly
         
         // runtime
         private AssemblyStep.StepRecord record;
+        private float leftProgress = 0;
+        private float rightProgress = 1;
+        
+        public float LeftTrimProgress => leftProgress;
+        public float RightTrimProgress => rightProgress;
         
         void Awake()
         {
-            playToggle.onValueChanged.AddListener(OnToggleClicked);
+            playToggle.onValueChanged.AddListener(OnPlayerButtonClicked);
             orientationChart.onDrag = OnChartDrag;
             accelerationChart.onDrag = OnChartDrag;
+            trimLeftToggle.onValueChanged.AddListener(isOn =>
+            {
+                if (isOn)
+                {
+                    trimRightToggle.isOn = false;
+                }
+            });
+            trimRightToggle.onValueChanged.AddListener(isOn =>
+            {
+                if (isOn)
+                {
+                    trimLeftToggle.isOn = false;
+                }
+            });
         }
         
-        void Start()
-        {
-            Hide();
-        }
-
         void Update()
         {
             var leftPlayer = HandRecordingCenter.Instance.LeftHandAnimationPlayer; 
             var progress = Mathf.Clamp(leftPlayer.GetProgress(), 0, 1);
             var length = right.anchoredPosition.x - left.anchoredPosition.x;
+            var rightPlayer = HandRecordingCenter.Instance.RightHandAnimationPlayer;
+            if (playToggle.isOn)
+            {
+                if (progress > rightProgress)
+                {
+                    leftPlayer.PlayToProgress(leftProgress);
+                    rightPlayer.PlayToProgress(leftProgress);
+                } else if (progress < leftProgress)
+                {
+                    leftPlayer.PlayToProgress(leftProgress);
+                    rightPlayer.PlayToProgress(leftProgress);
+                }   
+            }
             indicator.anchoredPosition = new Vector2(left.anchoredPosition.x + length * progress, indicator.anchoredPosition.y);
         }
 
@@ -53,11 +80,23 @@ namespace Scenes.interactables.Assembly
             var leftPos = left.anchoredPosition;
             var progress = Mathf.Clamp((position.x - leftPos.x) * 1f / length, 0, 1);
             playToggle.isOn = false;
+
+            if (trimLeftToggle.isOn)
+            {
+                trimLeft.sizeDelta = new Vector2(position.x - leftPos.x, trimLeft.sizeDelta.y);
+                leftProgress = progress;
+            }
+            else if (trimRightToggle.isOn)
+            {
+                trimRight.sizeDelta = new Vector2(right.anchoredPosition.x - position.x, trimRight.sizeDelta.y);
+                rightProgress = progress;
+            }
+
             leftPlayer.PlayToProgress(progress);
             rightPlayer.PlayToProgress(progress);
         }
 
-        private void OnToggleClicked(bool isOn)
+        private void OnPlayerButtonClicked(bool isOn)
         {
             if (record == null) return;
             var leftPlayer = HandRecordingCenter.Instance.LeftHandAnimationPlayer; 
@@ -66,6 +105,8 @@ namespace Scenes.interactables.Assembly
             {
                 leftPlayer.Play();
                 rightPlayer.Play();
+                trimLeftToggle.isOn = false;
+                trimRightToggle.isOn = false;
             }
             else
             {
@@ -111,8 +152,17 @@ namespace Scenes.interactables.Assembly
 
         public void SetupRecord(AssemblyStep.StepRecord stepRecord)
         {
-            record = stepRecord;
-            playToggle.isOn = true;
+            if (stepRecord != record)
+            {
+                leftProgress = 0;
+                rightProgress = 1;
+                trimLeft.sizeDelta = new Vector2(0, trimLeft.sizeDelta.y);
+                trimRight.sizeDelta = new Vector2(0, trimRight.sizeDelta.y);
+                record = stepRecord;
+                playToggle.isOn = true;
+            }
+            trimRightToggle.isOn = false;
+            trimLeftToggle.isOn = false;
             // animation
             HandRecordingCenter.Instance.SnapCanvasInFrontOfCamera();
             var leftPlayer = HandRecordingCenter.Instance.LeftHandAnimationPlayer; 
@@ -143,7 +193,7 @@ namespace Scenes.interactables.Assembly
                             new [] {imuData.Orientation.x, imuData.Orientation.y, imuData.Orientation.z}));
                         accelerationData.Add(new Tuple<float, float[]>(
                             sensorData.time,
-                            new []{imuData.Acceleration.x, imuData.Acceleration.y, imuData.Acceleration.z}));
+                            new []{imuData.LocalAcceleration.x, imuData.LocalAcceleration.y, imuData.LocalAcceleration.z}));
                     }
                 }
                 UpdateLineChart(orientationChart, orientationData);

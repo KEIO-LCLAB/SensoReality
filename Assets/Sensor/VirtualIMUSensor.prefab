@@ -105,6 +105,7 @@ Transform:
   - {fileID: 6484673969558268649}
   - {fileID: 6077504439823790132}
   - {fileID: 3554852839188253832}
+  - {fileID: 3502330118788597887}
   - {fileID: 8099727550503527564}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -126,12 +127,14 @@ MonoBehaviour:
   inActiveVisualization: {fileID: 7753213316617434581}
   preview: {fileID: 2287957456901849430}
   selectedVisualization: {fileID: 3647916376492028452}
+  visualBox: {fileID: 3966578706682242134}
   graphChart: {fileID: 4694684764125105388}
   rigidbody: {fileID: 932779791524461956}
   modeSwitchTime: 1
   jitterTime: 0.2
   controlledHand: 2
   prefab: {fileID: 3534786048013251570}
+  showSelectedVisualization: 1
   AnchorVisual: {fileID: 376156176303673728}
 --- !u!114 &5907861347563984430
 MonoBehaviour:
@@ -226,7 +229,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6195722112250784901}
-  - {fileID: 3502330118788597887}
   m_Father: {fileID: 4871527707680380044}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3966578706682242134
@@ -246,7 +248,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3502330118788597887
 Transform:
   m_ObjectHideFlags: 0
@@ -260,7 +262,7 @@ Transform:
   m_LocalScale: {x: 0.05149319, y: 0.09584651, z: 0.022000007}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6077504439823790132}
+  m_Father: {fileID: 4871527707680380044}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1090640396673757391
 MeshFilter:

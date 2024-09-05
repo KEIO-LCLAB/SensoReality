@@ -84,15 +84,18 @@ public class HandRecordingCenter : MonoBehaviour
         {
             time = time,
             rootPose =  rootPose,
+            worldOffset = initialPose.position,
             handJointPoses = handJointPoses
         };
     }
 
     public void SnapCanvasInFrontOfCamera()
     {
-        var cameraRig = DevicesRef.Instance.CameraRigRef.CameraRig;
-        transform.position = cameraRig.centerEyeAnchor.transform.position +
-                             cameraRig.centerEyeAnchor.transform.forward * 0.4f;
+        transform.position = Vector3.zero;
+        transform.rotation = Quaternion.identity;
+        // var cameraRig = DevicesRef.Instance.CameraRigRef.CameraRig;
+        // transform.position = cameraRig.centerEyeAnchor.transform.position +
+        //                      cameraRig.centerEyeAnchor.transform.forward * 0.4f;
     }
     
     public IEnumerator SnapCanvasInFrontOfCameraCoroutine()

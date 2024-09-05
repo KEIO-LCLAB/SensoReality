@@ -1,3 +1,4 @@
+using OVRSimpleJSON;
 using Sensor.visualization;
 using UnityEngine;
 
@@ -13,6 +14,15 @@ namespace Sensor
             public string ToCsvLine()
             {
                 return $"{distance}";
+            }
+
+            public JSONNode serialize()
+            {
+                var json = new JSONObject
+                {
+                    ["distance"] = distance
+                };
+                return json;
             }
         }
         
