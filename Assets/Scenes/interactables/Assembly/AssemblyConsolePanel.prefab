@@ -9675,8 +9675,7 @@ MonoBehaviour:
   distanceFromCamera: 0.45
   MoveCanvasInFrontOfCamera: 1
   CanvasGroup: {fileID: 2091640171351680602}
-  FaceToCamera: 0
-  HeadUp: 1
+  FaceToCamera: 1
   FadeDuration: 0.25
 --- !u!114 &6644982105552275727
 MonoBehaviour:

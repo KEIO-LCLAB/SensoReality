@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using OVRSimpleJSON;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace Scenes.interactables.Assembly
         private AssemblyArrow arrowPrefab;
         [SerializeField]
         private GameObject appendStepButton;
+        [SerializeField]
+        private ARCanvasFeature arCanvasFeature;
         
         // runtime
         private List<AssemblyStep> steps = new();
@@ -23,6 +26,20 @@ namespace Scenes.interactables.Assembly
         private Dictionary<AssemblyStep, AssemblyArrow> arrows = new();
         public Dictionary<AssemblyStep, AssemblyArrow> Arrows => arrows;
 
+        void Start()
+        {
+            StartCoroutine(openCanvas());
+        }
+        
+        private IEnumerator openCanvas()
+        {
+            yield return null;
+            if (arCanvasFeature != null)
+            {
+                arCanvasFeature.OpenCanvas();
+            }
+        }
+        
         public void RemoveStep(AssemblyStep step)
         {
             var nextStep = step.NextStep;

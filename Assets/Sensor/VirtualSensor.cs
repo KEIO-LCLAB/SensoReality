@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Oculus.Interaction;
@@ -32,13 +33,12 @@ namespace Sensor
         [Tooltip("The hand condition that the sensor can be controlled by.")]
         public SensorAttachable.HandCondition controlledHand = SensorAttachable.HandCondition.Both;
         [Tooltip("prefab of the sensor.")]
-        [HideInInspector]
         public GameObject prefab;
         public bool showSelectedVisualization = true;
         protected SensorDataCenter sensorDataCenter => SensorDataCenter.Instance;
         public Rigidbody Rigidbody => rigidbody;
-
-        
+        public bool registerOnStart = false;
+        public bool canBeTransform = true;
         
         /// <summary>
         /// to check if the sensor is working, if ture the sensor will collect data, otherwise it wont.
@@ -132,6 +132,19 @@ namespace Sensor
         }
         public Action<bool> onSelectedChanged;
 
+        protected override void Start()
+        {
+            if (registerOnStart)
+            {
+                StartCoroutine(Register());
+            }
+        }
+        
+        private IEnumerator Register()
+        {
+            yield return null;
+            sensorDataCenter.RegisterSensor(this);
+        }
 
         // run-time
         /// <summary>
@@ -231,7 +244,7 @@ namespace Sensor
             if (selectedTime >= 0)
             {
                 selectedTime += Time.deltaTime;
-                if (selectedTime >= modeSwitchTime)
+                if (selectedTime >= modeSwitchTime && canBeTransform)
                 {
                     // transform mode
                     if (sensorPlacement == null)

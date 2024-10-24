@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Oculus.Interaction;
+using OVRSimpleJSON;
 using UnityEngine;
 
 namespace Animations
@@ -27,6 +28,21 @@ namespace Animations
                 result.handJointPoses.Add(pose);
             }
             return result;
+        }
+        
+        public JSONObject serialize()
+        {
+            var json = new JSONObject();
+            json["time"] = time;
+            json["rootPose"] = Utils.SerializePose(rootPose);
+            json["worldOffset"] = Utils.SerializeVector3(worldOffset);
+            var handJointPosesArray = new JSONArray();
+            foreach (var pose in handJointPoses)
+            {
+                handJointPosesArray.Add(Utils.SerializePose(pose));
+            }
+            json["handJointPoses"] = handJointPosesArray;
+            return json;
         }
     }
 }

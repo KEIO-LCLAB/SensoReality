@@ -20,7 +20,7 @@ namespace Sensor
         [SerializeField] public float smoothWindowSize = 0.2f;
         [SerializeField] private int cacheTime = 4;
         [SerializeField] public bool alwaysUpdateBoneMeshAttachment = true;
-    
+
         public float SamplingInterval => 1.0f / samplingRate;
         // run-time
         private readonly Dictionary<ISensorDefinition, List<VirtualSensor>> sensors = new();

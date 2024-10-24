@@ -17,6 +17,8 @@ namespace Scenes.interactables.Assembly
         {
             public List<SensorReplayData> sensors;
             public HandGestureAnimation gestureAnimation;
+            public float leftTrimProgress = 0;
+            public float rightTrimProgress = 1;
         }
 
         [SerializeField] private AssemblyReplayView replayView;
@@ -125,20 +127,18 @@ namespace Scenes.interactables.Assembly
         {
             var json = new JSONObject();
             json["step_index"] = StepIndex;
-            var leftTrimProgress = replayView.LeftTrimProgress;
-            var rightTrimProgress = replayView.RightTrimProgress;
             if (HasRecord)
             {
                 var sensors = new JSONArray();
                 foreach (var sensor in _stepRecord.sensors)
                 {
-                    sensors.Add(sensor.serialize(leftTrimProgress, rightTrimProgress));
+                    sensors.Add(sensor.serialize());
                 }
+                json["trim"] = new JSONObject {["left"] = _stepRecord.leftTrimProgress, ["right"] = _stepRecord.rightTrimProgress};
                 json["sensor_data"] = sensors;
-                // TODO implement gesture animation serialization
                 // json["gesture"] = _stepRecord.gestureAnimation.serialize();
+                json["recording_duration"] = recordingTime;
             }
-            json["recording_duration"] = recordingTime * (rightTrimProgress - leftTrimProgress);
             return json;
         }
     }

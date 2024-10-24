@@ -20,11 +20,9 @@ namespace Scenes.interactables.Assembly
         
         // runtime
         private AssemblyStep.StepRecord record;
-        private float leftProgress = 0;
-        private float rightProgress = 1;
         
-        public float LeftTrimProgress => leftProgress;
-        public float RightTrimProgress => rightProgress;
+        public float LeftTrimProgress => record?.leftTrimProgress ?? 0;
+        public float RightTrimProgress => record?.rightTrimProgress ?? 1;
         
         void Awake()
         {
@@ -55,14 +53,14 @@ namespace Scenes.interactables.Assembly
             var rightPlayer = HandRecordingCenter.Instance.RightHandAnimationPlayer;
             if (playToggle.isOn)
             {
-                if (progress > rightProgress)
+                if (progress > RightTrimProgress)
                 {
-                    leftPlayer.PlayToProgress(leftProgress);
-                    rightPlayer.PlayToProgress(leftProgress);
-                } else if (progress < leftProgress)
+                    leftPlayer.PlayToProgress(LeftTrimProgress);
+                    rightPlayer.PlayToProgress(LeftTrimProgress);
+                } else if (progress < LeftTrimProgress)
                 {
-                    leftPlayer.PlayToProgress(leftProgress);
-                    rightPlayer.PlayToProgress(leftProgress);
+                    leftPlayer.PlayToProgress(LeftTrimProgress);
+                    rightPlayer.PlayToProgress(LeftTrimProgress);
                 }   
             }
             indicator.anchoredPosition = new Vector2(left.anchoredPosition.x + length * progress, indicator.anchoredPosition.y);
@@ -84,12 +82,12 @@ namespace Scenes.interactables.Assembly
             if (trimLeftToggle.isOn)
             {
                 trimLeft.sizeDelta = new Vector2(position.x - leftPos.x, trimLeft.sizeDelta.y);
-                leftProgress = progress;
+                record.leftTrimProgress = progress;
             }
             else if (trimRightToggle.isOn)
             {
                 trimRight.sizeDelta = new Vector2(right.anchoredPosition.x - position.x, trimRight.sizeDelta.y);
-                rightProgress = progress;
+                record.rightTrimProgress = progress;
             }
 
             leftPlayer.PlayToProgress(progress);
@@ -154,13 +152,14 @@ namespace Scenes.interactables.Assembly
         {
             if (stepRecord != record)
             {
-                leftProgress = 0;
-                rightProgress = 1;
-                trimLeft.sizeDelta = new Vector2(0, trimLeft.sizeDelta.y);
-                trimRight.sizeDelta = new Vector2(0, trimRight.sizeDelta.y);
                 record = stepRecord;
                 playToggle.isOn = true;
             }
+            
+            var length = right.anchoredPosition.x - left.anchoredPosition.x;
+            trimLeft.sizeDelta = new Vector2(record.leftTrimProgress * length, trimLeft.sizeDelta.y);
+            trimRight.sizeDelta = new Vector2(right.anchoredPosition.x - (record.rightTrimProgress * length + left.anchoredPosition.x), trimRight.sizeDelta.y);
+            
             trimRightToggle.isOn = false;
             trimLeftToggle.isOn = false;
             // animation
