@@ -1086,6 +1086,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 951255e64c3d34f4689c20b5730117f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  normalOffset: 0
   _collider: {fileID: 214681726218866147}
   _material: {fileID: 2100000, guid: 7ba9140bb0a43b44089e02ed8e5bc8c6, type: 2}
   _skinnedMeshRenderer: {fileID: 7547682872087247192}
@@ -1821,6 +1822,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Parent: {fileID: 3245088657756289129}
   HoverEffect: {fileID: 3152266380721567228}
+  handCondition: 2
+  controlledHand: 2
 --- !u!4 &2064805566589083433 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -7636238787854081953, guid: e546bbc02729d4395a2ea28facfeca6a, type: 3}

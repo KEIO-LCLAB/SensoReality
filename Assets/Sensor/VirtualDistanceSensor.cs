@@ -31,25 +31,12 @@ namespace Sensor
         [SerializeField] private GameObject indicatorLine;
         [SerializeField] private Transform startPoint;
         [SerializeField] private Transform endPoint;
-        [SerializeField] private Transform YAxis;
-        [SerializeField] private Transform XAxis;
         
         private LineChartController graphController;
 
         public float Progress => barChart.progress;
         
         public float Distance => Progress * validDistance;
-        
-        public float YRotation
-        {
-            get => YAxis.rotation.eulerAngles.y;
-            set => YAxis.rotation = Quaternion.Euler(0, value, 0);
-        }
-        public float XRotation 
-        {
-            get => XAxis.rotation.eulerAngles.x;
-            set => XAxis.rotation = Quaternion.Euler(value, 0, 0);
-        }
         
         public Vector3 StartPoint => startPoint.position;
 
@@ -96,7 +83,7 @@ namespace Sensor
                 graphController?.UploadData(time, new[] {sensorData.distance});
             }
             AppendData(time, sensorData);
-            indicatorLine.transform.localScale = new Vector3(1F, 1F, 333.333f * sensorData.distance);
+            indicatorLine.transform.localScale = new Vector3(1F, 1F, 10 * sensorData.distance);
         }
 
         public override ISensorDefinition SensorDefinition()

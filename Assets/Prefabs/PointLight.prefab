@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7434382263838345284}
   - component: {fileID: 6999801144227432433}
   - component: {fileID: 4529344614946532007}
+  - component: {fileID: 4293966035913613993}
   m_Layer: 0
   m_Name: PointLight
   m_TagString: Untagged
@@ -202,6 +203,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   normalOffset: 0.03
+--- !u!114 &4293966035913613993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1056507420103206712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be318487830ef524b9bf05e42d5e7a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6897895013961170282
 GameObject:
   m_ObjectHideFlags: 0

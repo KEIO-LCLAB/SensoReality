@@ -1510,6 +1510,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 951255e64c3d34f4689c20b5730117f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  normalOffset: 0
   _collider: {fileID: 8186639070322966153}
   _material: {fileID: 2100000, guid: 42e25c87dcd681c42b13fdd7ad7408ec, type: 2}
   _skinnedMeshRenderer: {fileID: 7917041433115479674}
@@ -1565,6 +1566,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1618879123077553085, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2663739976226239581, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
       propertyPath: m_Name
       value: AnimationModel
@@ -1579,23 +1584,23 @@ PrefabInstance:
       objectReference: {fileID: 8000411753272357223}
     - target: {fileID: 6720368782553143321, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6720368782553143321, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6720368782553143321, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 144
       objectReference: {fileID: 0}
     - target: {fileID: 6720368782553143321, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 88
       objectReference: {fileID: 0}
     - target: {fileID: 6720368782553143321, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -24
       objectReference: {fileID: 0}
     - target: {fileID: 9018155782443619348, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
       propertyPath: axis
@@ -2031,6 +2036,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Parent: {fileID: 4473558449087632506}
   HoverEffect: {fileID: 7597101612060011669}
+  handCondition: 2
+  controlledHand: 2
 --- !u!4 &5155315323625668860 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -7952683385424736330, guid: 1eacd81a4d3714cc0b9ed70d1f55a64d, type: 3}

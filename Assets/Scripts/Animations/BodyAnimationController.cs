@@ -85,6 +85,7 @@ namespace Animations
 
             if (_root != null)
             {
+                // smpl bones
                 var prefix = _root.name.Substring(0, 6);
                 for (var i = 0; i < AnimationUtils.BoneNames.Length; i++)
                 {
@@ -96,6 +97,24 @@ namespace Animations
                     _bones[i] = bone;
                 }
                 _initialBones = GetCurrentPose();
+            }
+            else
+            {
+                // banana bones
+                _root = Utils.FindFirstDeepChild(transform, "Root");
+                if (_root != null)
+                {
+                    for (var i = 0; i < AnimationUtils.BoneNamesBanana.Length; i++)
+                    {
+                        var bone = AnimationUtils.DeepFind(_root, AnimationUtils.BoneNamesBanana[i]);
+                        if (bone == null)
+                        {
+                            Debug.LogError("Bone not found: " + AnimationUtils.BoneNamesBanana[i]);
+                        }
+                        _bones[i] = bone;
+                    }
+                    _initialBones = GetCurrentPose();
+                }
             }
             if (animationFile != null)
             {

@@ -47,6 +47,34 @@ namespace Animations
             "L_Hand", // 22
             "R_Hand" // 23
         };
+        
+        public static readonly string[] BoneNamesBanana =
+        {
+            "Hips", // 0
+            "Left Thigh", // 1
+            "Right Thigh", // 2
+            "Spine 1", // 3
+            "Left Leg", // 4
+            "Right Leg", // 5
+            "Spine 2", // 6
+            "Left Foot", // 7
+            "Right Foot", // 8
+            "Spine 3", // 9
+            "Left Toes", // 10
+            "Right Toes", // 11
+            "Neck", // 12
+            "Left Shoulder", // 13
+            "Right Shoulder", // 14
+            "Head", // 15
+            "Left Arm", // 16
+            "Right Arm", // 17
+            "Left Forearm", // 18
+            "Right Forearm", // 19
+            "Left Hand", // 20
+            "Right Hand", // 21
+            "Left Hand Index 1", // 22
+            "Right Hand Index 1" // 23
+        };
             
         public static AnimationFrame[] ParseAnimation(string json)
         {
