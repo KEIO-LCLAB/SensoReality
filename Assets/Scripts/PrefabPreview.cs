@@ -19,7 +19,7 @@ public class PrefabPreview : MonoBehaviour
         {
             prefabName = GetComponentInChildren<TextMeshProUGUI>();
         }
-        if (prefab != null)
+        if (prefab != null && preview.sprite == null)
         {
             StartCoroutine(RenderingPreview(prefab));
         }
@@ -32,7 +32,7 @@ public class PrefabPreview : MonoBehaviour
         StartCoroutine(RenderingPreview(prefab));
     }
 
-    private IEnumerator RenderingPreview(GameObject modelPrefab)
+    public IEnumerator RenderingPreview(GameObject modelPrefab)
     {
         if (preview == null) yield break;
         Texture2D texture2D = null;

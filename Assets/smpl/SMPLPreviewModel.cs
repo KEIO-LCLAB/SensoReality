@@ -25,5 +25,39 @@ namespace smpl
             dir.y = 0;
             return new Pose(hit.point,  Quaternion.FromToRotation(Vector3.back, dir));
         }
+        
+        public void onHeightChange(float height)
+        {
+            if (_skinnedMeshRenderer != null)
+            {
+                if (height > 0)
+                {
+                    _skinnedMeshRenderer.SetBlendShapeWeight(1, 100 * height);
+                    _skinnedMeshRenderer.SetBlendShapeWeight(0, 0);
+                }
+                else
+                {
+                    _skinnedMeshRenderer.SetBlendShapeWeight(1, 0);
+                    _skinnedMeshRenderer.SetBlendShapeWeight(0, -100 * height);
+                }
+            }
+        }
+        
+        public void onWeightChange(float weight)
+        {
+            if (_skinnedMeshRenderer != null)
+            {
+                if (weight > 0)
+                {
+                    _skinnedMeshRenderer.SetBlendShapeWeight(3, 100 * weight);
+                    _skinnedMeshRenderer.SetBlendShapeWeight(2, 0);
+                }
+                else
+                {
+                    _skinnedMeshRenderer.SetBlendShapeWeight(3, 0);
+                    _skinnedMeshRenderer.SetBlendShapeWeight(2, -100 * weight);
+                }
+            }
+        }
     }
 }

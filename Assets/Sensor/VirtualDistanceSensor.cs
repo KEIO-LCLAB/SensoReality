@@ -25,7 +25,8 @@ namespace Sensor
                 return json;
             }
         }
-        
+
+        [SerializeField] private bool showBarPreview = true;
         [SerializeField] private float validDistance = 2;
         [SerializeField] private BarChart barChart;
         [SerializeField] private GameObject indicatorLine;
@@ -54,8 +55,14 @@ namespace Sensor
         {
             base.Start();
             barChart.ProgressTextFormatter = f => (f >= 1 ? ">= " + validDistance.ToString("F2") : (f * validDistance).ToString("F2")) + "m";
-            onShowPreviewChanged += showPreview => { indicatorLine?.SetActive(showPreview); };
+            onShowPreviewChanged += showPreview => {
+                {
+                    indicatorLine?.SetActive(showPreview);
+                    preview?.SetActive(showBarPreview && showPreview);
+                }
+            };
             indicatorLine.SetActive(ShowPreview);
+            preview?.SetActive(showBarPreview && ShowPreview);
             graphController = graphChart.GetComponent<LineChartController>();
         }
 
@@ -83,7 +90,8 @@ namespace Sensor
                 graphController?.UploadData(time, new[] {sensorData.distance});
             }
             AppendData(time, sensorData);
-            indicatorLine.transform.localScale = new Vector3(1F, 1F, 10 * sensorData.distance);
+            var parentScale = indicatorLine.transform.parent.lossyScale;
+            indicatorLine.transform.localScale = new Vector3(1F / parentScale.x, 1F / parentScale.z, sensorData.distance / parentScale.z);
         }
 
         public override ISensorDefinition SensorDefinition()

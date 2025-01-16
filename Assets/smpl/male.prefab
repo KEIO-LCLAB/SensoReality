@@ -1578,6 +1578,34 @@ PrefabInstance:
       propertyPath: bodyAnimationController
       value: 
       objectReference: {fileID: 1687309382621329812}
+    - target: {fileID: 5702664448441136214, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702664448441136214, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702664448441136214, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4429968393709025758}
+    - target: {fileID: 5702664448441136214, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702664448441136214, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: onHeightChange
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702664448441136214, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: smpl.SMPLPreviewModel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702664448441136214, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 6338383008914981784, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
       propertyPath: prefab
       value: 
@@ -1606,6 +1634,34 @@ PrefabInstance:
       propertyPath: axis
       value: 
       objectReference: {fileID: 5882692997118748833}
+    - target: {fileID: 9091004622015768793, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091004622015768793, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091004622015768793, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4429968393709025758}
+    - target: {fileID: 9091004622015768793, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091004622015768793, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: onWeightChange
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091004622015768793, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: smpl.SMPLPreviewModel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091004622015768793, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

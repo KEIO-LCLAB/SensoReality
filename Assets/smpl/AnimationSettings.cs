@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -14,6 +14,7 @@ namespace smpl
         [SerializeField] private ToggleGroup toggleGroup;
         [SerializeField] private PrefabPreview prefabPreview;
         [SerializeField] private BodyAnimationController bodyAnimationController;
+        [SerializeField] private GameObject previewModel;
         
         // runtime
         public readonly List<RawAnimation> animations = new();
@@ -59,6 +60,18 @@ namespace smpl
                 var copiedToggle = Instantiate(prefabPreview, toggleGroup.transform);
                 copiedToggle.gameObject.SetActive(true);
                 copiedToggle.prefabName.text = animationName;
+                if (previewModel != null)
+                {
+                    Texture2D preview = null;
+                    var animationController = previewModel.GetComponent<BodyAnimationController>();
+                    if (animationController != null)
+                    {
+                        animationController.Init();
+                        animationController.setAnimation(rawAnimation);
+                        animationController.RunNextFrame(0.001f);
+                        yield return copiedToggle.RenderingPreview(previewModel);
+                    }
+                }
                 if (copiedToggle.TryGetComponent<Toggle>(out var toggle))
                 {
                     toggle.onValueChanged.AddListener(isOn =>

@@ -143,7 +143,7 @@ MonoBehaviour:
   showSelectedVisualization: 1
   registerOnStart: 0
   canBeTransform: 1
-  validDistance: 2
+  maxIntensity: 5
   barChart: {fileID: 7855963295389892336}
 --- !u!114 &5907861347563984430
 MonoBehaviour:
@@ -763,6 +763,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1953680407267851448, guid: 09a0babc34cbb474eae29f81afeb647e, type: 3}
+      propertyPath: sensor
+      value: 
+      objectReference: {fileID: 5988207486985688187}
     - target: {fileID: 1953680407267851448, guid: 09a0babc34cbb474eae29f81afeb647e, type: 3}
       propertyPath: graphView
       value: 
