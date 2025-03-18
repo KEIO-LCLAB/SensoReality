@@ -4,13 +4,13 @@ namespace Animations
 {
     public class BodyAnimationController : MonoBehaviour
     {
-        [SerializeField] private TextAsset animationFile;
+        [SerializeField] public TextAsset animationFile;
         [SerializeField] private float fps = 24;
         [SerializeField] public float speed = 1;
         [SerializeField] public bool globalTranslation = false;
         [SerializeField] public float amplitude = 1f;
         [SerializeField] private SkinCollider skinCollider;
-    
+        
         // runtime
         private Transform _root;
         private Transform[] _bones;
@@ -30,6 +30,7 @@ namespace Animations
         }
     
         public string animationName => _rawAnimation?.name ?? "no_animation";
+        public bool isPlaying { get; set; } = true;
 
         private int frameCount => _rawAnimation?.frames.Length ?? 0;
         private AnimationFrame getFrame(int index) => _rawAnimation.frames[index % frameCount];
@@ -42,7 +43,8 @@ namespace Animations
     
         public Quaternion[] GetInitialPose => _initialBones;
         public Quaternion[] GetInitialMotionPose => _initialMotionBones;
-
+        public bool hasAnimation => _rawAnimation != null;
+        
         public void setAnimation(string name, string animation)
         {
             setAnimation(new RawAnimation
@@ -179,7 +181,12 @@ namespace Animations
             }
         }
 
-        void UpdateBodyPose(float animationTime)
+        public void UpdateBodyPose()
+        {
+            UpdateBodyPose(time);
+        }
+
+        public void UpdateBodyPose(float animationTime)
         {
             if (_root != null)
             {
@@ -218,7 +225,10 @@ namespace Animations
     
         private void FixedUpdate()
         {
-            RunNextFrame(Time.fixedDeltaTime);
+            if (isPlaying)
+            {
+                RunNextFrame(Time.fixedDeltaTime);
+            }
         }
 
         /// <summary>

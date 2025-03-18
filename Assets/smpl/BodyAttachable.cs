@@ -5,6 +5,10 @@ namespace smpl
 {
     public class BodyAttachable : SensorAttachable
     {
+        [SerializeField] private SkinnedMeshRenderer _skinnedMeshRenderer;
+        [SerializeField] private Material _material;
+        [SerializeField] private Material _hoverMaterial;
+        
         private Transform FindNearestBone(Vector3 position)
         {
             var bonesColliders = Parent.GetComponentsInChildren<Collider>();
@@ -22,7 +26,7 @@ namespace smpl
                     nearestDistance = distance;
                 }
                 if (distance < 0.00001f)
-                {
+                {   
                     break;
                 }
             }
@@ -36,6 +40,16 @@ namespace smpl
         public override void OnAttachTo(VirtualSensor sensor)
         {
             sensor.transform.SetParent(FindNearestBone(sensor.transform.position));
+        }
+        
+        public override void OnAttachHover(VirtualSensor sensor)
+        {
+            _skinnedMeshRenderer.materials = new[] {_material, _hoverMaterial};
+        }
+        
+        public override void OnAttachHoverExit(VirtualSensor sensor)
+        {
+            _skinnedMeshRenderer.materials = new[] {_material};
         }
     }
 }

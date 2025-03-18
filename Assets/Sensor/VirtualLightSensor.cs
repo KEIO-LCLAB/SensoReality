@@ -34,7 +34,7 @@ namespace Sensor
         protected override void Start()
         {
             base.Start();
-            barChart.ProgressTextFormatter = f => f + "lux";
+            barChart.ProgressTextFormatter = f => f.ToString("F2") + " lux";
             graphController = graphChart.GetComponent<LineChartController>();
         }
 

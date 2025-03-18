@@ -8,7 +8,29 @@ public class PrefabPreview : MonoBehaviour
     [SerializeField] public GameObject prefab;
     [SerializeField] public Image preview;
     [SerializeField] public TextMeshProUGUI prefabName;
+    [SerializeField] public int width = 256;
+    [SerializeField] public int height = 256;
+    [SerializeField] private Texture2D _textureCache;
+    [SerializeField] public bool clonePrefab = false;
+    [SerializeField] public Color backgroundColor = Color.clear;
+    [SerializeField] public bool orthographicMode = true;
+    [SerializeField] public Vector3 cameraDirection = new Vector3(-1, -1, -1);
     
+    public Texture2D TextureCache
+    {
+        get => _textureCache;
+        set
+        {
+            if (_textureCache != null)
+            {
+                Destroy(_textureCache);
+            }
+            _textureCache = value;
+            if (preview == null) return;
+            preview.sprite = Sprite.Create(value, new Rect(0, 0, value.width, value.height), Vector2.zero);
+        }
+    }
+        
     public void Start()
     {
         if (preview == null)
@@ -19,7 +41,7 @@ public class PrefabPreview : MonoBehaviour
         {
             prefabName = GetComponentInChildren<TextMeshProUGUI>();
         }
-        if (prefab != null && preview.sprite == null)
+        if (prefab != null && preview != null && preview.sprite == null)
         {
             StartCoroutine(RenderingPreview(prefab));
         }
@@ -34,13 +56,14 @@ public class PrefabPreview : MonoBehaviour
 
     public IEnumerator RenderingPreview(GameObject modelPrefab)
     {
-        if (preview == null) yield break;
         Texture2D texture2D = null;
-        RuntimePreviewGenerator.OrthographicMode = true;
-        RuntimePreviewGenerator.BackgroundColor = Color.clear;
+        RuntimePreviewGenerator.OrthographicMode = orthographicMode;
+        RuntimePreviewGenerator.BackgroundColor = backgroundColor;
+        RuntimePreviewGenerator.MarkTextureNonReadable = false;
+        RuntimePreviewGenerator.PreviewDirection = cameraDirection.normalized;
         RuntimePreviewGenerator.GenerateModelPreviewAsync(tex => texture2D = tex, 
-            modelPrefab.transform, shouldIgnoreParticleSystems:true, width:256, height:256);
+            modelPrefab.transform, shouldCloneModel: clonePrefab, shouldIgnoreParticleSystems:true, width:width, height:height);
         yield return new WaitUntil(() => texture2D != null);
-        preview.sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), Vector2.zero);
+        TextureCache = texture2D;
     }
 }

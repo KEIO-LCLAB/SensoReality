@@ -309,6 +309,13 @@ MonoBehaviour:
   prefab: {fileID: 8000411753272357223, guid: 496a9121ae960354c8346fb416b30df7, type: 3}
   preview: {fileID: 3665067791037489047}
   prefabName: {fileID: 3643498352181122322}
+  width: 256
+  height: 256
+  _textureCache: {fileID: 0}
+  clonePrefab: 1
+  backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+  orthographicMode: 1
+  cameraDirection: {x: -1, y: -1, z: -1}
 --- !u!1 &493615135653601537
 GameObject:
   m_ObjectHideFlags: 0
