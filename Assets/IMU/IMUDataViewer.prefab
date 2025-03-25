@@ -1600,7 +1600,7 @@ GameObject:
   - component: {fileID: 9073542057099317610}
   - component: {fileID: 3296235828839883381}
   m_Layer: 0
-  m_Name: LineChart
+  m_Name: IMUDataViewer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3242,7 +3242,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 500, y: 280}
+  m_SizeDelta: {x: 10, y: 280}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &5075173178880455174
 Canvas:
@@ -5355,8 +5355,8 @@ RectTransform:
   - {fileID: 2617338775112071883}
   - {fileID: 8684087668170382443}
   - {fileID: 2122524291657946839}
-  - {fileID: 7653488151593973251}
   - {fileID: 1505004820735569218}
+  - {fileID: 7653488151593973251}
   m_Father: {fileID: 9059570834236366562}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}

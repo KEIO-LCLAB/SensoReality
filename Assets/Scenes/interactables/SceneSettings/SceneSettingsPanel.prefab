@@ -811,7 +811,6 @@ GameObject:
   - component: {fileID: 4277137252825425967}
   - component: {fileID: 9073542057099317610}
   - component: {fileID: 3296235828839883381}
-  - component: {fileID: 1223357091956568062}
   - component: {fileID: 3988003744218347093}
   m_Layer: 0
   m_Name: SceneSettingsPanel
@@ -1094,19 +1093,9 @@ MonoBehaviour:
   distanceFromCamera: 0.44
   MoveCanvasInFrontOfCamera: 1
   CanvasGroup: {fileID: 4346831764793469138}
+  FaceToCamera: 1
+  HeadUp: 1
   FadeDuration: 0.25
---- !u!114 &1223357091956568062
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2663739976226239581}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cafe051c9ca7b514ca6cfa768e0a2ed1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3988003744218347093
 MonoBehaviour:
   m_ObjectHideFlags: 0
