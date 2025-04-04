@@ -482,11 +482,19 @@ public class SMPLX : MonoBehaviour
                 // Do not clone mesh if we haven't modified the shape parameters yet
                 if (_defaultShape)
                     return false;
+                
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
+                {
+                    Debug.LogWarning("[SMPL-X] Skipping mesh clone in Editor to avoid scene bloat.");
+                    return false;
+                }
+#endif
 
                 // Clone default shared mesh so that we can modify later the shared mesh bind pose without affecting other shared instances.
                 // Note that this will drastically increase the Unity scene file size and make Unity Editor very slow on save when multiple bodies like this are used.
                 _sharedMeshDefault = _smr.sharedMesh;
-                _smr.sharedMesh = (Mesh)Instantiate( _smr.sharedMesh );
+                _smr.sharedMesh = Instantiate( _smr.sharedMesh );
                 Debug.LogWarning("[SMPL-X] Cloning shared mesh to allow for joint recalculation on beta shape change [" + gameObject.name + "]. Note that this will increase the current scene file size significantly if model contains pose correctives.");
             }
 
