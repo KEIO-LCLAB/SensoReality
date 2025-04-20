@@ -2,8 +2,9 @@ using UnityEngine;
 
 namespace Animations
 {
-    public class BodyAnimationController : MonoBehaviour
+    public abstract class BodyAnimationController : MonoBehaviour
     {
+        
         [SerializeField] public TextAsset animationFile;
         [SerializeField] private float fps = 24;
         [SerializeField] public float speed = 1;
@@ -12,12 +13,13 @@ namespace Animations
         [SerializeField] private SkinCollider skinCollider;
         
         // runtime
-        private Transform _root;
-        private Transform[] _bones;
-        private Quaternion[] _initialBones;
-        private Quaternion[] _initialMotionBones;
-        private RawAnimation _rawAnimation;
-        private float deltaTime
+        protected Transform _root;
+        protected Transform[] _bones;
+        protected Quaternion[] _initialBones;
+        protected Quaternion[] _initialMotionBones;
+        protected RawAnimation _rawAnimation;
+        
+        public float deltaTime
         {
             get
             {
@@ -31,9 +33,9 @@ namespace Animations
     
         public string animationName => _rawAnimation?.name ?? "no_animation";
         public bool isPlaying { get; set; } = true;
-
-        private int frameCount => _rawAnimation?.frames.Length ?? 0;
-        private AnimationFrame getFrame(int index) => _rawAnimation.frames[index % frameCount];
+        public float AnimationPlayTime => frameCount * deltaTime * speed;
+        public int frameCount => _rawAnimation?.frames.Length ?? 0;
+        public AnimationFrame getFrame(int index) => _rawAnimation.frames[((index % frameCount) + frameCount) % frameCount];
         public float time { set; get; }
         public float normalizedTime
         {
@@ -44,21 +46,12 @@ namespace Animations
         public Quaternion[] GetInitialPose => _initialBones;
         public Quaternion[] GetInitialMotionPose => _initialMotionBones;
         public bool hasAnimation => _rawAnimation != null;
-        
-        public void setAnimation(string name, string animation)
-        {
-            setAnimation(new RawAnimation
-            {
-                name = name,
-                fps = -1,
-                frames = AnimationUtils.ParseAnimation(animation)
-            });
-        }
     
-        public void setAnimation(RawAnimation animation)
+        public virtual void setAnimation(RawAnimation animation)
         {
             _rawAnimation = animation;
             SetInitialMotionPose(getPose(0));
+            SetCurrentPose(_initialMotionBones);
         }
         
         public void removeAnimation()
@@ -66,62 +59,21 @@ namespace Animations
             _rawAnimation = null;
         }
     
-        public RawAnimation getAnimation()
+        public virtual RawAnimation getAnimation()
         {
             return _rawAnimation;
         }
+        
+        public Transform Root => _root;
+        public Transform[] Bones => _bones;
 
+        public abstract string[] getJointNames();
+        
+        public abstract void PrepareModel();
+        
         public void Start()
         {
-            Init();
-        }
-
-        public void Init()
-        {
-            _bones = new Transform[AnimationUtils.BoneNames.Length];
-            _root = Utils.FindFirstDeepChild(transform, "f_avg_root");
-            if (_root == null)
-            {
-                _root = Utils.FindFirstDeepChild(transform, "m_avg_root");
-            }
-
-            if (_root != null)
-            {
-                // smpl bones
-                var prefix = _root.name.Substring(0, 6);
-                for (var i = 0; i < AnimationUtils.BoneNames.Length; i++)
-                {
-                    var bone = AnimationUtils.DeepFind(_root, prefix + AnimationUtils.BoneNames[i]);
-                    if (bone == null)
-                    {
-                        Debug.LogError("Bone not found: " + AnimationUtils.BoneNames[i]);
-                    }
-                    _bones[i] = bone;
-                }
-                _initialBones = GetCurrentPose();
-            }
-            else
-            {
-                // banana bones
-                _root = Utils.FindFirstDeepChild(transform, "Root");
-                if (_root != null)
-                {
-                    for (var i = 0; i < AnimationUtils.BoneNamesBanana.Length; i++)
-                    {
-                        var bone = AnimationUtils.DeepFind(_root, AnimationUtils.BoneNamesBanana[i]);
-                        if (bone == null)
-                        {
-                            Debug.LogError("Bone not found: " + AnimationUtils.BoneNamesBanana[i]);
-                        }
-                        _bones[i] = bone;
-                    }
-                    _initialBones = GetCurrentPose();
-                }
-            }
-            if (animationFile != null)
-            {
-                setAnimation(animationFile.name, animationFile.text);
-            }
+            PrepareModel();
         }
 
         public void SetInitialMotionPose(Quaternion[] pose)
@@ -139,7 +91,7 @@ namespace Animations
             var lerp = (animationTime % deltaTime) / deltaTime;
             var lastFrame = getFrame(frameIndex);
             var nextFrame = getFrame(frameIndex + 1);
-            var poses = new Quaternion[AnimationUtils.BoneNames.Length];
+            var poses = new Quaternion[getJointNames().Length];
             for (var i = 0; i < lastFrame.boneRotations.Length; i++)
             {
                 var bone = _bones[i];
@@ -151,10 +103,25 @@ namespace Animations
             }
             return poses;
         }
+        
+        public Vector3 getGlobalTranslation(float animationTime)
+        {
+            if (_rawAnimation == null || frameCount == 0)
+            {
+                return Vector3.zero;
+            }
+            var frameIndex = (int) (animationTime / deltaTime);
+            var lerp = (animationTime % deltaTime) / deltaTime;
+            var lastFrame = getFrame(frameIndex);
+            var nextFrame = getFrame(frameIndex + 1);
+            var translation = Vector3.Lerp(lastFrame.translation, nextFrame.translation, lerp) - _rawAnimation.frames[0].translation;
+            translation = new Vector3(-translation.x, -translation.y, -translation.z);
+            return translation;
+        }
     
         public Quaternion[] GetCurrentPose()
         {
-            var poses = new Quaternion[AnimationUtils.BoneNames.Length];
+            var poses = new Quaternion[getJointNames().Length];
             for (var i = 0; i < _bones.Length; i++)
             {
                 var bone = _bones[i];
@@ -180,13 +147,21 @@ namespace Animations
                 }
             }
         }
-
-        public void UpdateBodyPose()
+        
+        public void SetCurrentGlobalTranslation(Vector3 translation)
         {
-            UpdateBodyPose(time);
+            if (_root != null)
+            {
+                _root.localPosition = translation;
+            }
         }
 
-        public void UpdateBodyPose(float animationTime)
+        public void PlayAnimationToTime()
+        {
+            PlayAnimationTo(time);
+        }
+
+        public void PlayAnimationTo(float animationTime)
         {
             if (_root != null)
             {
@@ -197,9 +172,7 @@ namespace Animations
                 if (globalTranslation)
                 {
                     var translation = Vector3.Lerp(lastFrame.translation, nextFrame.translation, lerp) - _rawAnimation.frames[0].translation;
-                    // translation = new Vector3(translation.y, translation.x, -translation.z);
                     translation = new Vector3(-translation.x, -translation.y, -translation.z);
-                    // translation = new Vector3(-translation.y, translation.z, translation.x);
                     _root.localPosition = translation;
                 }
                 else
@@ -242,7 +215,7 @@ namespace Animations
                 return;
             }
             time += fixedDeltaTime * speed;
-            UpdateBodyPose(time);
+            PlayAnimationToTime();
         }
 
     }

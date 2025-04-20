@@ -43,18 +43,12 @@ namespace smpl
             {
                 var animationName = Path.GetFileNameWithoutExtension(file);
                 // loading animation async
-                AnimationFrame[] frames = null;
+                RawAnimation rawAnimation = null;
                 ThreadPool.QueueUserWorkItem(_ =>
                 {
-                    frames = AnimationUtils.ParseAnimation(File.ReadAllText(file));
+                    rawAnimation = AnimationUtils.ParseSmplAnimation(animationName, File.ReadAllText(file));
                 });
-                yield return new WaitUntil(() => frames != null);
-                var rawAnimation = new RawAnimation
-                {
-                    fps = -1,
-                    name = animationName,
-                    frames = frames
-                };
+                yield return new WaitUntil(() => rawAnimation != null);
                 animations.Add(rawAnimation);
                 
                 var copiedToggle = Instantiate(prefabPreview, toggleGroup.transform);
@@ -66,7 +60,7 @@ namespace smpl
                     var animationController = previewModel.GetComponent<BodyAnimationController>();
                     if (animationController != null)
                     {
-                        animationController.Init();
+                        animationController.PrepareModel();
                         animationController.setAnimation(rawAnimation);
                         animationController.RunNextFrame(0.001f);
                         yield return copiedToggle.RenderingPreview(previewModel);

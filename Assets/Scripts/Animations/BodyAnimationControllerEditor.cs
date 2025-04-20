@@ -10,11 +10,6 @@ namespace Animations
         {
             var controller = (BodyAnimationController) target;
             DrawDefaultInspector();
-            if (controller.animationFile!= null && GUILayout.Button("Load Animation"))
-            {
-                controller.setAnimation(controller.animationFile.name, controller.animationFile.text);
-            }
-            
             if (!controller.hasAnimation) return;
             
             if (controller.isPlaying)
@@ -37,7 +32,7 @@ namespace Animations
             if (EditorGUI.EndChangeCheck())
             {
                 controller.normalizedTime = newValue;
-                controller.UpdateBodyPose();
+                controller.PlayAnimationToTime();
             }
 
             // 可选：显示当前进度的百分比信息

@@ -14,18 +14,18 @@ namespace Sensor
     public abstract class VirtualSensor : PointableElement
     {
         [Tooltip("to visualize the object when it is in active.")]
-        [SerializeField] [AllowNull] protected GameObject inActiveVisualization;
+        [SerializeField] [AllowNull] public GameObject inActiveVisualization;
         [Tooltip("to visualize the object when it is in active.")]
-        [SerializeField] [AllowNull] protected GameObject preview;
+        [SerializeField] [AllowNull] public GameObject preview;
         [Tooltip("to visualize the object when it is selected.")]
-        [SerializeField] [AllowNull] protected GameObject selectedVisualization;
+        [SerializeField] [AllowNull] public GameObject selectedVisualization;
         [Tooltip("to visualize the object when it is selected.")]
-        [SerializeField] [AllowNull] protected GameObject visualBox;
+        [SerializeField] [AllowNull] public GameObject visualBox;
         [FormerlySerializedAs("graphController")]
         [Tooltip("to visualize the Graph Chart.")]
-        [SerializeField] [AllowNull] protected GameObject graphChart;
+        [SerializeField] [AllowNull] public GameObject graphChart;
         [Tooltip("to visualize the object when it is selected.")]
-        [SerializeField] [AllowNull] protected Rigidbody rigidbody;
+        [SerializeField] [AllowNull] public Rigidbody rigidbody;
         [Tooltip("duration for transform mode. grabbing time less than the duration, the sensor will be in selecting mode.")]
         public float modeSwitchTime = 1.0f;
         [Tooltip("jitter duration. the sensor will jitter for 1 second to notify the user that the sensor is in transform mode.")]

@@ -486,8 +486,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5583118808586136271}
-  - component: {fileID: 6846634845124175650}
   - component: {fileID: 2952772429341304327}
+  - component: {fileID: 6263217963018782812}
   m_Layer: 0
   m_Name: female
   m_TagString: Untagged
@@ -512,24 +512,6 @@ Transform:
   - {fileID: 949047324931397789}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6846634845124175650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4787485195218559445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4849c32dc944fbb4fad8bfe4ec651f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animationFile: {fileID: 0}
-  fps: 24
-  speed: 1
-  globalTranslation: 0
-  amplitude: 1
-  skinCollider: {fileID: 2934454797018452867}
 --- !u!114 &2952772429341304327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -546,6 +528,24 @@ MonoBehaviour:
   _collider: {fileID: 214681726218866147}
   _material: {fileID: 2100000, guid: 7ba9140bb0a43b44089e02ed8e5bc8c6, type: 2}
   _skinnedMeshRenderer: {fileID: 7547682872087247192}
+--- !u!114 &6263217963018782812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4787485195218559445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67ca08ad82d14688bcb59d8b574f4418, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationFile: {fileID: 0}
+  fps: 24
+  speed: 1
+  globalTranslation: 0
+  amplitude: 1
+  skinCollider: {fileID: 0}
 --- !u!1 &5171214543441427671
 GameObject:
   m_ObjectHideFlags: 0
@@ -1751,10 +1751,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4717346871793488154, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
-      propertyPath: bodyAnimationController
-      value: 
-      objectReference: {fileID: 6846634845124175650}
     - target: {fileID: 4996684456942845843, guid: a281cbb219d0d9f4dbbd0b721451ba15, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
