@@ -15,13 +15,15 @@ namespace Sensor.visualization
         private LineRenderer lineRenderer;
         [SerializeField]
         private List<Transform> avaliablePositions;
+        [SerializeField]
+        private Transform parent = null;
         
         // runtime
         protected readonly List<Tuple<float, T>> cacheData = new();
         
         protected virtual void Start()
         {
-            gameObject.transform.parent = null;
+            gameObject.transform.parent = parent;
         }
 
         public virtual void UploadData(float time, T data)
