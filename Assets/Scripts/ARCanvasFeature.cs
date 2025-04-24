@@ -26,6 +26,9 @@ public class ARCanvasFeature : MonoBehaviour
         var cameraRig = DevicesRef.Instance.CameraRigRef.CameraRig;
         transform.position = cameraRig.centerEyeAnchor.transform.position +
                              cameraRig.centerEyeAnchor.transform.forward * distanceFromCamera;
+        transform.LookAt(cameraRig.centerEyeAnchor);
+        // 180 degree rotation on y axis to face the camera
+        transform.Rotate(0, 180, 0);
     }
     
     public IEnumerator SnapCanvasInFrontOfCameraCoroutine()

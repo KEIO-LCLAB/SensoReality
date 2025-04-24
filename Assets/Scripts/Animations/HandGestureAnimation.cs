@@ -17,6 +17,11 @@ namespace Animations
         {
             this.lefHandGestureKeyFrames = lefHandGestureKeyFrames;
             this.rightHandGestureKeyFrames = rightHandGestureKeyFrames;
+            if (lefHandGestureKeyFrames.Length == 0 && rightHandGestureKeyFrames.Length == 0)
+            {
+                duration = 0;
+                return;
+            }
             duration = Mathf.Max(lefHandGestureKeyFrames[^1].time, rightHandGestureKeyFrames[^1].time);
         }
         

@@ -39,6 +39,8 @@ namespace Sensor
         public Rigidbody Rigidbody => rigidbody;
         public bool registerOnStart = false;
         public bool canBeTransform = true;
+        public bool canSelected = true;
+
         
         /// <summary>
         /// to check if the sensor is working, if ture the sensor will collect data, otherwise it wont.
@@ -208,7 +210,7 @@ namespace Sensor
             }
             else if (selectedTime >= 0 && evt.Type == PointerEventType.Unselect)
             {
-                if (selectedTime < modeSwitchTime)
+                if (selectedTime < modeSwitchTime && canSelected)
                 {
                     // selecting mode
                     isSelected = !isSelected;

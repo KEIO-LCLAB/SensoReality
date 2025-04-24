@@ -1,28 +1,33 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Prefabs.CHI
 {
-    public class Scene1Manager : MonoBehaviour
+    public class SceneManager : MonoBehaviour
     {
-        public GameObject scene1Prefab;
-        protected internal GameObject Scene1Instance;
+        public static SceneManager SelectedScene = null;
+        public GameObject scenePrefab;
+        protected internal GameObject SceneInstance;
         List<OVRSpatialAnchor.UnboundAnchor> _unboundAnchors = new();
         
-        public IEnumerator Start()
+        public void SelectScene()
         {
-            // execute next frame
-            yield return new WaitForSeconds(1);
+            if (SelectedScene != null)
+            {
+                if (SelectedScene == this) return;
+                SelectedScene.RemoveScene();
+            }
+            SelectedScene = this;
             Reset();
         }
 
         IEnumerator CreateOrLoadSpatialAnchor()
         {
-            if (Scene1Instance == null)
+            if (SceneInstance == null)
             {
                 yield break;
             }
@@ -43,7 +48,7 @@ namespace Prefabs.CHI
                 Debug.LogError("Failed to load anchor.");
             }
             
-            var anchor = Scene1Instance.AddComponent<OVRSpatialAnchor>();
+            var anchor = SceneInstance.AddComponent<OVRSpatialAnchor>();
             // Wait for the async creation
             yield return new WaitUntil(() => anchor.Created);
             Debug.Log($"Created anchor {anchor.Uuid}");
@@ -58,9 +63,9 @@ namespace Prefabs.CHI
                 foreach (var unboundAnchor in result.Value)
                 {
                     var localized = await unboundAnchor.LocalizeAsync();
-                    if (localized && Scene1Instance != null)
+                    if (localized && SceneInstance != null)
                     {
-                        var spatialAnchor = Scene1Instance.AddComponent<OVRSpatialAnchor>();
+                        var spatialAnchor = SceneInstance.AddComponent<OVRSpatialAnchor>();
                         unboundAnchor.BindTo(spatialAnchor);
                         Debug.Log($"Localized & bound: {unboundAnchor.Uuid}");
                         return true;
@@ -75,21 +80,28 @@ namespace Prefabs.CHI
             return false;
         }
         
-        public async void SaveSpatialAnchor()
+        public IEnumerator SaveSpatialAnchor(bool hasDestory=false)
         {
-            if (Scene1Instance == null)
+            if (SceneInstance == null)
             {
                 Debug.LogError("Scene1Instance is null");
-                return;
+                yield break;
             }
-            var anchor = Scene1Instance.GetComponent<OVRSpatialAnchor>();
+            var anchor = SceneInstance.GetComponent<OVRSpatialAnchor>();
+            if (anchor != null && hasDestory)
+            {
+                yield return new WaitUntil(() => SceneInstance.GetComponent<OVRSpatialAnchor>() == null);
+                anchor = null;
+            }
             if (anchor == null)
             {
-                StartCoroutine(CreateSpatialAnchorAndSave());
-                return;
+                anchor = SceneInstance.AddComponent<OVRSpatialAnchor>();
+                // Wait for the async creation
+                yield return new WaitUntil(() => anchor.Created);
             }
-            
-            var result = await anchor.SaveAnchorAsync();
+            var task = anchor.SaveAnchorAsync();
+            yield return new WaitUntil(() => task.IsCompleted);
+            var result = task.GetResult();
             if (result.Success)
             {
                 PlayerPrefs.SetString("vsens_scene1_anchor", anchor.Uuid.ToString());
@@ -103,7 +115,7 @@ namespace Prefabs.CHI
         
         public async void ResetPosition(bool saveAnchor=true)
         {
-            if (Scene1Instance == null) return;
+            if (SceneInstance == null) return;
             var cameraRig = DevicesRef.Instance.CameraRigRef.CameraRig;
             var forward = cameraRig.centerEyeAnchor.transform.forward;
             // move the object to the surface of the front 40 cm
@@ -121,40 +133,37 @@ namespace Prefabs.CHI
                 pos += new Vector3(0, -0.25f, 0);
             }
 
-            var oldAnchor = Scene1Instance.GetComponent<OVRSpatialAnchor>();
-            if (oldAnchor != null && saveAnchor)
+            if (!saveAnchor)
             {
-                await OVRSpatialAnchor.EraseAnchorsAsync(new []{oldAnchor}, null);
+                SceneInstance.transform.position = pos;
+                // xy plane
+                forward.y = 0;
+                SceneInstance.transform.rotation = Quaternion.LookRotation(-forward);
+                return;
+            }
+            var oldAnchor = SceneInstance.GetComponent<OVRSpatialAnchor>();
+            if (oldAnchor != null)
+            {
+                await oldAnchor.EraseAnchorAsync();
                 Destroy(oldAnchor);
             }
-            Scene1Instance.transform.position = pos;
+            SceneInstance.transform.position = pos;
             // xy plane
             forward.y = 0;
-            Scene1Instance.transform.rotation = Quaternion.LookRotation(-forward);
+            SceneInstance.transform.rotation = Quaternion.LookRotation(-forward);
             Debug.Log("Reset Scnene1 Position");
-            if (!saveAnchor) return;
-            SaveSpatialAnchor();
+            StartCoroutine(SaveSpatialAnchor(true));
         }
 
-        IEnumerator CreateSpatialAnchorAndSave()
-        {
-            var anchor = Scene1Instance.AddComponent<OVRSpatialAnchor>();
-
-            // Wait for the async creation
-            yield return new WaitUntil(() => anchor.Created);
-
-            Debug.Log($"Created anchor {anchor.Uuid}");
-            SaveSpatialAnchor();
-        }
-        
         public void Reset()
         {
-            if (Scene1Instance != null)
+            CHISceneManagement.ClearScene();
+            if (SceneInstance != null)
             {
-                Destroy(Scene1Instance);
-                Scene1Instance = null;
+                Destroy(SceneInstance);
+                SceneInstance = null;
             }
-            Scene1Instance = Instantiate(scene1Prefab, transform);
+            SceneInstance = Instantiate(scenePrefab, transform);
             ResetPosition(false);
             Debug.Log("Reset Scene1");
             StartCoroutine(CreateOrLoadSpatialAnchor());
@@ -162,36 +171,36 @@ namespace Prefabs.CHI
         
         public void RemoveScene()
         {
-            if (Scene1Instance != null)
+            if (SceneInstance != null)
             {
-                Destroy(Scene1Instance);
-                Scene1Instance = null;
+                Destroy(SceneInstance);
+                SceneInstance = null;
             }
         }
     }
     
 #if UNITY_EDITOR
-    [UnityEditor.CustomEditor(typeof(Scene1Manager))]
-    public class Scene1ManagerEditor : UnityEditor.Editor
+    [UnityEditor.CustomEditor(typeof(SceneManager))]
+    public class SceneManagerEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            var scene1Manager = (Scene1Manager) target;
-            if (GUILayout.Button("Reset Scene1"))
+            var scene1Manager = (SceneManager) target;
+            if (GUILayout.Button("Reset Scene"))
             {
                 scene1Manager.Reset();
-            } else if (scene1Manager.Scene1Instance != null)
+            } else if (scene1Manager.SceneInstance != null)
             {
-                if (GUILayout.Button("Reset Scene1 Position"))
+                if (GUILayout.Button("Reset Scene Position"))
                 {
                     scene1Manager.ResetPosition();
-                } else if (GUILayout.Button("Remove Scene1"))
+                } else if (GUILayout.Button("Remove Scene"))
                 {
                     scene1Manager.RemoveScene();
                 } else if (GUILayout.Button("Save Anchor"))
                 {
-                    scene1Manager.SaveSpatialAnchor();
+                    scene1Manager.StartCoroutine(scene1Manager.SaveSpatialAnchor());
                 }
             } 
         }

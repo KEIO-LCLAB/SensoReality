@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +54,10 @@ public class HandRecordingCenter : MonoBehaviour
 
     public HandGestureAnimation StopRecording()
     {
+        if (!isRecording)
+        {
+            return new HandGestureAnimation(Array.Empty<HandGestureKeyFrame>(), Array.Empty<HandGestureKeyFrame>());
+        }
         isRecording = false;
         return new HandGestureAnimation(leftHandGestureKeyFrames.ToArray(), rightHandGestureKeyFrames.ToArray());
     }

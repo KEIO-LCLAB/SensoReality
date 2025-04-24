@@ -30,6 +30,7 @@ namespace Sensor
         public bool IsSimulating => isSimulating;
         private bool isRecording;
         public bool IsRecording => isRecording;
+        public Dictionary<ISensorDefinition, List<VirtualSensor>> Sensors => sensors;
 
         public void Start()
         {

@@ -3278,9 +3278,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 982795185}
-        m_TargetAssemblyTypeName: Prefabs.CHI.Scene1Manager, Assembly-CSharp
-        m_MethodName: Reset
+      - m_Target: {fileID: 1717878991}
+        m_TargetAssemblyTypeName: Prefabs.CHI.CHISceneManagement, Assembly-CSharp
+        m_MethodName: ResetCurrentScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8345,7 +8345,7 @@ GameObject:
   - component: {fileID: 982795184}
   - component: {fileID: 982795185}
   m_Layer: 0
-  m_Name: Examples
+  m_Name: Scene1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8378,7 +8378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a25ea209ad246fc4ab7ca1338f3647db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scene1Prefab: {fileID: 8732238447472844049, guid: 221229a1e12880d4689a0d79e7387190, type: 3}
+  scenePrefab: {fileID: 8732238447472844049, guid: 221229a1e12880d4689a0d79e7387190, type: 3}
 --- !u!1 &985199801
 GameObject:
   m_ObjectHideFlags: 0
@@ -9880,6 +9880,51 @@ MonoBehaviour:
   _includeChildrenAsDependents: 1
   _gameObjects: []
   _monoBehaviours: []
+--- !u!1 &1163455622
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1163455624}
+  - component: {fileID: 1163455623}
+  m_Layer: 0
+  m_Name: Scene2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1163455623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1163455622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a25ea209ad246fc4ab7ca1338f3647db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scenePrefab: {fileID: 7621962673559401109, guid: ec889aa38ce95af45bc81557387a7647, type: 3}
+--- !u!4 &1163455624
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1163455622}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.958, z: 0.367}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1168490599
 GameObject:
   m_ObjectHideFlags: 0
@@ -10489,6 +10534,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3203227244291449458, guid: dd9e630fa7b88be4a973f8d850ba8369, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3988003744218347093, guid: dd9e630fa7b88be4a973f8d850ba8369, type: 3}
       propertyPath: _customEffect
       value: 
@@ -10651,14 +10700,17 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4157427758407349796, guid: dd9e630fa7b88be4a973f8d850ba8369, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2139941283}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2663739976226239581, guid: dd9e630fa7b88be4a973f8d850ba8369, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1717878991}
   m_SourcePrefab: {fileID: 100100000, guid: dd9e630fa7b88be4a973f8d850ba8369, type: 3}
 --- !u!114 &1250830208 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3296235828839883381, guid: dd9e630fa7b88be4a973f8d850ba8369, type: 3}
   m_PrefabInstance: {fileID: 1250830207}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1717878983}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 37390f6660e5b3b4bac206acc210de0d, type: 3}
@@ -10878,10 +10930,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 982795185}
-        m_TargetAssemblyTypeName: Prefabs.CHI.Scene1Manager, Assembly-CSharp
-        m_MethodName: ResetPosition
-        m_Mode: 6
+      - m_Target: {fileID: 1717878991}
+        m_TargetAssemblyTypeName: Prefabs.CHI.CHISceneManagement, Assembly-CSharp
+        m_MethodName: ResetCurrentScenePosition
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -14760,6 +14812,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1895517683}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1717878983 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2663739976226239581, guid: dd9e630fa7b88be4a973f8d850ba8369, type: 3}
+  m_PrefabInstance: {fileID: 1250830207}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1717878991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1717878983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b8f87d49306f09438569ee8d0914b12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Scene1: {fileID: 982795185}
+  Scene2: {fileID: 1163455623}
 --- !u!1 &1720252557
 GameObject:
   m_ObjectHideFlags: 0
@@ -19209,3 +19280,4 @@ SceneRoots:
   - {fileID: 1039483804}
   - {fileID: 1250830207}
   - {fileID: 982795184}
+  - {fileID: 1163455624}
